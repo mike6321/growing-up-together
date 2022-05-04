@@ -1,12 +1,13 @@
 package com.mission.domain;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @Getter
 @Table(name = "grade")
-@Getter
+@NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Grade {
 
     @Id
