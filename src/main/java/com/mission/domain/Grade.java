@@ -14,7 +14,9 @@ public class Grade {
     @GeneratedValue
     @Column(name = "grade_id")
     private Long id;
-    @Embedded
+//    @Embedded
+    @Column(name = "grade_status")
+    @Enumerated(EnumType.STRING)
     private GradeStaus gradeStaus;
     private long point;
 

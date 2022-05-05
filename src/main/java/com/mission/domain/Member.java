@@ -1,5 +1,6 @@
 package com.mission.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,8 +33,9 @@ public class Member {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_of_topic_of_interest_id")
     private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "grade_id")
+//    @JsonIgnore
     private Grade grade;
 
     public void addParticipationMission(ParticipationMission participationMission) {

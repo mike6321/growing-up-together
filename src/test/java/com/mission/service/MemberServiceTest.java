@@ -4,6 +4,7 @@ import com.mission.domain.Member;
 import com.mission.repository.MemberRepository;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -30,6 +31,7 @@ class MemberServiceTest {
   private MemberRepository memberRepository;
 
   @Test
+  @DisplayName("회원조회_기본")
   public void findMember() {
     // given
     final long memberId = 1L;
