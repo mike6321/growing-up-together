@@ -15,6 +15,7 @@ import java.util.List;
 public class MemberUpdateVO {
 
   @Min(value = 1L) @Max(value = Long.MAX_VALUE)
+  @NotNull
   private Long id;
   @NotEmpty
   private String nickname;
@@ -25,7 +26,6 @@ public class MemberUpdateVO {
   private Grade grade;
   @Email
   private String email;
-//  private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
-//  private List<ParticipationMission> participationMissions = new ArrayList();
+  private List<String> topicOfInterests = new ArrayList();
 
 }

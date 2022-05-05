@@ -1,20 +1,36 @@
 package com.mission.domain;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @Getter
 @Table(name = "member_of_topic_of_interest")
-@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class MemberOfTopicInterest {
 
     @Id @GeneratedValue
     @Column(name = "member_of_topic_of_interest_id")
     private Long memberOfTopicOfInterestId;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_of_interest_id")
+    @JsonIgnore
     private TopicOfInterest topicOfInterest;
-    // TODO bbubbush :: 단방향
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    @JsonIgnore
+    private Member member;
 
+    public void setMember(Member member) {
+        this.member = member;
+
+    }
+
+    public void setTopicOfInterest(TopicOfInterest topicOfInterest) {
+        this.topicOfInterest = topicOfInterest;
+
+    }
 }

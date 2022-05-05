@@ -12,11 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(SpringExtension.class)
-@DataJpaTest
+@ExtendWith(SpringExtension.class) @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 class MemberRepositoryTest {
@@ -28,7 +28,7 @@ class MemberRepositoryTest {
   @DisplayName("회원조회_기본")
   void findMemberBasic() {
     // given
-    final long expectedId = 1L;
+    final long expectedId = 2L;
     final String expectedNickname = "bbubbush";
     final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
     final List<MemberOfTopicInterest> expectedTopicOfInterests = new ArrayList();
@@ -56,8 +56,10 @@ class MemberRepositoryTest {
     assertEquals(expectedTopicOfInterests, findMember.getTopicOfInterests());
     assertEquals(0, findMember.getTopicOfInterests().size());
 
-    assertNull(findMember.getGrade());
-    assertFalse(findMember.isTopicOfInterestAlarm());
+    assertNotNull(findMember.getGrade());
+    assertEquals(GradeStaus.BEGINNER, findMember.getGrade().getGradeStaus());
+
+    assertTrue(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
 
@@ -67,11 +69,11 @@ class MemberRepositoryTest {
   @DisplayName("회원조회_Grade 추가")
   void findMemberAddGrade() {
     // given
-    final long expectedId = 19L;
-    final String expectedNickname = "Sanghoon";
-    final GradeStaus expectedGradeStatus = GradeStaus.BEGINNER;
+    final long expectedId = 14L;
+    final String expectedNickname = "bbubbush";
     final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
-    final List<MemberOfTopicInterest> expectedTopicOfInterests = new ArrayList();
+    final String expectedNameOfTopicOfInterest = "Spring,Java";
+    long expectedHasPoint = 0L;
 
     // when
     Member findMember = memberRepository.findById(expectedId)
@@ -94,13 +96,20 @@ class MemberRepositoryTest {
     assertEquals(0, findMember.getParticipationMissions().size());
 
     assertNotNull(findMember.getTopicOfInterests());
-    assertEquals(expectedTopicOfInterests, findMember.getTopicOfInterests());
-    assertEquals(0, findMember.getTopicOfInterests().size());
+    assertEquals(2, findMember.getTopicOfInterests().size());
+    assertEquals(expectedNameOfTopicOfInterest, findMember.getTopicOfInterests()
+      .stream()
+      .map(MemberOfTopicInterest::getTopicOfInterest)
+      .map(TopicOfInterest::getName)
+      .collect(Collectors.joining(","))
+    )
+    ;
 
-//    assertNotNull(findMember.getGrade());
-//    assertEquals(expectedGradeStatus, findMember.getGrade().getGradeStaus());
+    assertNotNull(findMember.getGrade());
+    assertEquals(GradeStaus.BEGINNER, findMember.getGrade().getGradeStaus());
+    assertEquals(expectedHasPoint, findMember.getGrade().getPoint());
 
-    assertTrue(findMember.isTopicOfInterestAlarm());
+    assertFalse(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
 

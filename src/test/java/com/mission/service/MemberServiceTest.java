@@ -34,7 +34,7 @@ class MemberServiceTest {
   @DisplayName("회원조회_기본")
   public void findMember() {
     // given
-    final long memberId = 1L;
+    final long memberId = 2L;
     Member createMember = Member.builder()
       .id(memberId)
       .nickname("bbubbush")
@@ -76,6 +76,7 @@ class MemberServiceTest {
     assertFalse(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
+
   }
 
 }

@@ -9,7 +9,8 @@ import java.util.List;
 
 @Entity @Getter
 @Table(name = "member")
-@NoArgsConstructor @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Member {
 
@@ -27,20 +28,59 @@ public class Member {
     @Column(name = "email")
     private String email;
     @OneToMany(mappedBy = "member")
+    @Builder.Default
     private List<ParticipationMission> participationMissions = new ArrayList();
     @Column(name = "is_withdrawal")
     private boolean isWithdrawal;
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_of_topic_of_interest_id")
+    @OneToMany(mappedBy = "member")
+//    @JoinColumn(name = "member_of_topic_of_interest_id")
+    @Builder.Default
     private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "grade_id")
-//    @JsonIgnore
+    @JsonIgnore
     private Grade grade;
 
     public void addParticipationMission(ParticipationMission participationMission) {
         participationMissions.add(participationMission);
         participationMission.setMember(this);
+
+    }
+
+    public void addTopicOfInterests(MemberOfTopicInterest memberOfTopicInterest) {
+        topicOfInterests.add(memberOfTopicInterest);
+        memberOfTopicInterest.setMember(this);
+
+    }
+    /* Setter */
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+
+    }
+
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+
+    }
+
+    public void updateIsTopicOfInterestAlarm(boolean isTopicOfInterestAlarm) {
+        this.isTopicOfInterestAlarm = isTopicOfInterestAlarm;
+
+    }
+
+    public void updateIsEmailAuthenticate(boolean isEmailAuthenticate) {
+        this.isEmailAuthenticate = isEmailAuthenticate;
+
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+
+    }
+
+    public void updateIsWithdrawal(boolean isWithdrawal) {
+        this.isWithdrawal = isWithdrawal;
+
     }
 
 }
