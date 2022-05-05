@@ -68,7 +68,7 @@ class MemberRepositoryTest {
   void findMemberAddGrade() {
     // given
     final long expectedId = 19L;
-    final String expectedNickname = "bbubbush";
+    final String expectedNickname = "Sanghoon";
     final GradeStaus expectedGradeStatus = GradeStaus.BEGINNER;
     final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
     final List<MemberOfTopicInterest> expectedTopicOfInterests = new ArrayList();
