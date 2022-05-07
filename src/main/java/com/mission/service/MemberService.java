@@ -55,6 +55,7 @@ public class MemberService {
     List<MemberOfTopicInterest> topicOfInterests = memberCreateVO.getTopicOfInterests()
       .stream()
       .map(topic -> topicOfInterestRepository.findByName(topic))
+      .filter(topicOfInterest -> topicOfInterest != null)
       .map(topicOfInterest -> MemberOfTopicInterest.builder()
         .topicOfInterest(topicOfInterest)
         .build())
@@ -73,7 +74,8 @@ public class MemberService {
     topicOfInterests.forEach(topicOfInterest -> createMember.addTopicOfInterests(topicOfInterest));
 
     // 회원관심주제 등록
-    topicOfInterests.forEach(topicOfInterest -> memberOfTopicOfInterestRepository.save(topicOfInterest));
+    topicOfInterests.stream()
+      .forEach(topicOfInterest -> memberOfTopicOfInterestRepository.save(topicOfInterest));
     return createMember;
 
   }
