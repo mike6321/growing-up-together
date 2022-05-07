@@ -1,15 +1,19 @@
 package com.mission.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "mission")
-@Getter
+@Getter @NoArgsConstructor
+@AllArgsConstructor(staticName = "of")
+@Builder
+@Entity @Table(name = "mission")
 public class Mission {
 
     @Id @GeneratedValue
@@ -27,7 +31,7 @@ public class Mission {
     private LocalDateTime startDate;
     @Column(name = "endDate")
     private LocalDateTime endDate;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "mission_of_topic_of_interest_id")
     private List<MissionOfTopicInterest> missionOfTopicInterests = new ArrayList<>();
 
