@@ -3,6 +3,7 @@ package com.mission.service;
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
 import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.RequestUpdateMission;
 import com.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,14 @@ public class MissionService {
     }
 
     @Transactional
-    public Long updateMissionInformation(RequestCreateMission requestCreateMission) {
-        Long missionId = requestCreateMission.getMissionId();
+    public Long updateMissionInformation(RequestUpdateMission requestUpdateMission) {
+        Long missionId = requestUpdateMission.getMissionId();
         Mission mission = missionRepository.findById(missionId)
                                            .orElseThrow(EntityNotFoundException::new);
 
-        List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestCreateMission);
+        List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestUpdateMission);
 
-        mission.createMission(requestCreateMission, missionOfTopicInterests);
+        mission.createMission(requestUpdateMission, missionOfTopicInterests);
 
         return missionRepository.save(mission)
                                 .getId();

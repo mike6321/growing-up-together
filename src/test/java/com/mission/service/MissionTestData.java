@@ -2,6 +2,7 @@ package com.mission.service;
 
 import com.mission.domain.Holiday;
 import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.RequestUpdateMission;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,10 +29,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateSubjectData(Long missionId) {
+    public static RequestUpdateMission updateSubjectData(Long missionId) {
         String subject = "미션1";
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(subject)
                 .holiday(HOLIDAY)
@@ -43,10 +44,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateHolidayData(Long missionId) {
+    public static RequestUpdateMission updateHolidayData(Long missionId) {
         Holiday holiday = new Holiday(false, true, true, true, true, true, true);
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(holiday)
@@ -58,10 +59,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateNumberOfParticipantsData(Long missionId) {
+    public static RequestUpdateMission updateNumberOfParticipantsData(Long missionId) {
         int numberOfParticipants = 2;
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -73,10 +74,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateCreatorData(Long missionId) {
+    public static RequestUpdateMission updateCreatorData(Long missionId) {
         String creator = "sanghoon.lee";
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -88,10 +89,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateStartDateData(Long missionId) {
+    public static RequestUpdateMission updateStartDateData(Long missionId) {
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -103,10 +104,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateEndDateData(Long missionId) {
+    public static RequestUpdateMission updateEndDateData(Long missionId) {
         LocalDateTime endDate = LocalDateTime.now().plusDays(3);
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -118,10 +119,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestCreateMission updateMissionOfTopicInterestsData(Long missionId) {
+    public static RequestUpdateMission updateMissionOfTopicInterestsData(Long missionId) {
         List<String> missionOfTopicInterests = List.of("Spring", "Devops", "React");
 
-        return RequestCreateMission.builder()
+        return RequestUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)

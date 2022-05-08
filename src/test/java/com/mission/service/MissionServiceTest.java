@@ -3,6 +3,7 @@ package com.mission.service;
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
 import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.RequestUpdateMission;
 import com.mission.repository.MissionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +56,7 @@ class MissionServiceTest {
     public void update_mission_subject() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateSubjectData = MissionTestData.updateSubjectData(missionId);
+        RequestUpdateMission updateSubjectData = MissionTestData.updateSubjectData(missionId);
         // when
         missionService.updateMissionInformation(updateSubjectData);
         // then
@@ -70,7 +71,7 @@ class MissionServiceTest {
     public void update_mission_holiday() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateHolidayData = MissionTestData.updateHolidayData(missionId);
+        RequestUpdateMission updateHolidayData = MissionTestData.updateHolidayData(missionId);
         // when
         missionService.updateMissionInformation(updateHolidayData);
         // then
@@ -85,7 +86,7 @@ class MissionServiceTest {
     public void update_mission_numberOfParticipants() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateNumberOfParticipantsData = MissionTestData.updateNumberOfParticipantsData(missionId);
+        RequestUpdateMission updateNumberOfParticipantsData = MissionTestData.updateNumberOfParticipantsData(missionId);
         // when
         missionService.updateMissionInformation(updateNumberOfParticipantsData);
         // then
@@ -100,7 +101,7 @@ class MissionServiceTest {
     public void update_mission_creator() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateCreatorData = MissionTestData.updateCreatorData(missionId);
+        RequestUpdateMission updateCreatorData = MissionTestData.updateCreatorData(missionId);
         // when
         missionService.updateMissionInformation(updateCreatorData);
         // then
@@ -115,7 +116,7 @@ class MissionServiceTest {
     public void update_mission_startDate() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateStartDateData = MissionTestData.updateStartDateData(missionId);
+        RequestUpdateMission updateStartDateData = MissionTestData.updateStartDateData(missionId);
         // when
         missionService.updateMissionInformation(updateStartDateData);
         // then
@@ -130,7 +131,7 @@ class MissionServiceTest {
     public void update_mission_endDate() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateEndDateData = MissionTestData.updateEndDateData(missionId);
+        RequestUpdateMission updateEndDateData = MissionTestData.updateEndDateData(missionId);
         // when
         missionService.updateMissionInformation(updateEndDateData);
         // then
@@ -145,7 +146,7 @@ class MissionServiceTest {
     public void update_mission_missionOfTopicInterests() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestCreateMission updateMissionOfTopicInterestsData = MissionTestData.updateMissionOfTopicInterestsData(missionId);
+        RequestUpdateMission updateMissionOfTopicInterestsData = MissionTestData.updateMissionOfTopicInterestsData(missionId);
         // when
         missionService.updateMissionInformation(updateMissionOfTopicInterestsData);
         // then
