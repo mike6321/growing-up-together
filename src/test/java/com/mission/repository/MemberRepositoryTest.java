@@ -39,7 +39,7 @@ class MemberRepositoryTest {
 
     // when
     Member findMember = memberRepository.findById(expectedId)
-      .orElse(null);
+      .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
 
     // then
     assertNotNull(findMember);
@@ -85,7 +85,7 @@ class MemberRepositoryTest {
 
     // when
     Member findMember = memberRepository.findById(expectedId)
-      .orElse(null);
+      .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
 
     // then
     assertNotNull(findMember);
@@ -187,7 +187,7 @@ class MemberRepositoryTest {
     final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
 
     Member findMember = memberRepository.findById(expectedMemberId)
-      .orElse(null);
+      .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
 
     // when
     findMember.updateNickname(expectedNickname);

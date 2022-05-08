@@ -30,4 +30,11 @@ public class Grade {
         this.gradeStaus = gradeStaus;
 
     }
+
+    public static Grade createBeginnerGrade() {
+        return Grade.builder()
+          .point(0L)
+          .gradeStaus(GradeStaus.BEGINNER)
+          .build();
+    }
 }

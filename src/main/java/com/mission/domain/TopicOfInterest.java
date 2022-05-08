@@ -1,15 +1,17 @@
 package com.mission.domain;
 
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity @Getter
 @Table(name = "topic_of_interest")
-@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class TopicOfInterest {
 
     @Id @GeneratedValue

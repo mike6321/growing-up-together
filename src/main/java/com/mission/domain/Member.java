@@ -1,6 +1,7 @@
 package com.mission.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mission.vo.MemberCreateVO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,14 +33,23 @@ public class Member {
     private List<ParticipationMission> participationMissions = new ArrayList();
     @Column(name = "is_withdrawal")
     private boolean isWithdrawal;
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 //    @JoinColumn(name = "member_of_topic_of_interest_id")
     @Builder.Default
     private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
     @JsonIgnore
     private Grade grade;
+
+    public static Member createMember(MemberCreateVO memberCreateVO, Grade memberGrade) {
+        return Member.builder()
+          .email(memberCreateVO.getEmail())
+          .nickname(memberCreateVO.getNickname())
+          .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
+          .grade(memberGrade)
+          .build();
+    }
 
     public void addParticipationMission(ParticipationMission participationMission) {
         participationMissions.add(participationMission);
@@ -52,6 +62,7 @@ public class Member {
         memberOfTopicInterest.setMember(this);
 
     }
+
     /* Setter */
     public void updateNickname(String nickname) {
         this.nickname = nickname;
