@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor(staticName = "of")
 @Builder
 @Entity @Table(name = "mission")
+@DynamicUpdate
 public class Mission {
 
     @Id @GeneratedValue
@@ -23,7 +25,7 @@ public class Mission {
     @Column(name = "subject")
     private String subject;
     @Embedded
-    private Holiday holiday;
+    private Holiday holiday = new Holiday();
     @Column(name = "numberOfParticipants")
     private int numberOfParticipants;
     @Column(name = "creator")
@@ -32,49 +34,23 @@ public class Mission {
     private LocalDateTime startDate;
     @Column(name = "endDate")
     private LocalDateTime endDate;
-    @OneToMany(mappedBy = "mission", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "mission")
     private List<MissionOfTopicInterest> missionOfTopicInterests = new ArrayList<>();
 
-    public static Mission createMission(RequestCreateMission requestCreateMission, List<MissionOfTopicInterest> missionOfTopicInterests) {
-        Mission mission = new Mission();
-        mission.updateSubject(requestCreateMission.getSubject());
-        mission.updateHoliday(requestCreateMission.getHoliday());
-        mission.updateNumberOfParticipants(requestCreateMission.getNumberOfParticipants());
-        mission.updateCreator(requestCreateMission.getCreator());
-        mission.updateStartDate(requestCreateMission.getStartDate());
-        mission.updateEndDate(requestCreateMission.getEndDate());
+    public void createMission(RequestCreateMission requestCreateMission, List<MissionOfTopicInterest> missionOfTopicInterests) {
+        this.subject = requestCreateMission.getSubject();
+        this.holiday = requestCreateMission.getHoliday();
+        this.numberOfParticipants = requestCreateMission.getNumberOfParticipants();
+        this.creator = requestCreateMission.getCreator();
+        this.startDate = requestCreateMission.getStartDate();
+        this.endDate = requestCreateMission.getEndDate();
         missionOfTopicInterests.stream()
-                               .forEach(mission::addMissionOfTopicInterests);
-        return mission;
+                               .forEach(this::addMissionOfTopicInterests);
     }
 
     public void addMissionOfTopicInterests(MissionOfTopicInterest missionOfTopicInterest) {
         this.missionOfTopicInterests.add(missionOfTopicInterest);
         missionOfTopicInterest.createMission(this);
-    }
-
-    public void updateSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void updateHoliday(Holiday holiday) {
-        this.holiday = holiday;
-    }
-
-    public void updateNumberOfParticipants(int numberOfParticipants) {
-        this.numberOfParticipants = numberOfParticipants;
-    }
-
-    public void updateCreator(String creator) {
-        this.creator = creator;
-    }
-
-    public void updateStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public void updateEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
     }
 
 }

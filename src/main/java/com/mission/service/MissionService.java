@@ -2,45 +2,48 @@ package com.mission.service;
 
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
-import com.mission.domain.TopicOfInterest;
 import com.mission.dto.mission.RequestCreateMission;
 import com.mission.repository.MissionRepository;
-import com.mission.repository.TopicOfInterestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MissionService {
 
-    private final TopicOfInterestRepository topicOfInterestRepository;
+    private final TopicOfInterestService topicOfInterestService;
     private final MissionRepository missionRepository;
 
     @Transactional
-    public Long saveMission(final RequestCreateMission requestCreateMission) {
-        List<TopicOfInterest> topicOfInterests = createMissionOfTopicInterests(requestCreateMission.getMissionOfTopicInterests());
-        List<MissionOfTopicInterest> missionOfTopicInterests = topicOfInterests.stream()
-                                                                               .map(MissionOfTopicInterest::new)
-                                                                               .collect(Collectors.toList());
-
-        Mission createMission = Mission.createMission(requestCreateMission, missionOfTopicInterests);
-        return missionRepository.save(createMission)
+    public Long saveMission(RequestCreateMission requestCreateMission) {
+        List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestCreateMission);
+        Mission mission = new Mission();
+        mission.createMission(requestCreateMission, missionOfTopicInterests);
+        return missionRepository.save(mission)
                                 .getId();
     }
 
     @Transactional
-    public List<TopicOfInterest> createMissionOfTopicInterests(List<String> missionOfTopicInterestsNames) {
-        List<String> existsTopicOfInterests = topicOfInterestRepository.findByNameIn(missionOfTopicInterestsNames)
-                                                                       .stream()
-                                                                       .map(TopicOfInterest::getName)
-                                                                       .collect(Collectors.toList());
-        List<TopicOfInterest> nonExistsTopicOfInterests = TopicOfInterest.nonExistsTopic(missionOfTopicInterestsNames, existsTopicOfInterests);
-        topicOfInterestRepository.saveAll(nonExistsTopicOfInterests);
-        return TopicOfInterest.createTopicOfInterestName(missionOfTopicInterestsNames);
+    public Long updateMissionInformation(RequestCreateMission requestCreateMission) {
+        Long missionId = requestCreateMission.getMissionId();
+        Mission mission = missionRepository.findById(missionId)
+                                           .orElseThrow(EntityNotFoundException::new);
+
+        List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestCreateMission);
+
+        mission.createMission(requestCreateMission, missionOfTopicInterests);
+
+        return missionRepository.save(mission)
+                                .getId();
+    }
+
+    private List<MissionOfTopicInterest> getMissionOfTopicInterests(RequestCreateMission requestCreateMission) {
+        List<MissionOfTopicInterest> missionOfTopicInterests = topicOfInterestService.getMissionOfTopicInterests(requestCreateMission);
+        return missionOfTopicInterests;
     }
 
 }

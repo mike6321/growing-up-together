@@ -19,7 +19,7 @@ public class MissionOfTopicInterest {
     @Id @GeneratedValue
     @Column(name = "mission_of_topic_interest_id")
     private Long id;
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "topic_of_interest_id")
     private TopicOfInterest topicOfInterest;
     @ManyToOne(fetch = LAZY)
