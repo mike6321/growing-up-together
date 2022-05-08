@@ -1,8 +1,6 @@
 package com.mission.domain;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,14 +13,12 @@ import java.util.stream.IntStream;
 @Table(name = "topic_of_interest")
 @Getter
 @NoArgsConstructor
-@IdClass(TopicOfInterestId.class)
 public class TopicOfInterest {
 
     @Id @GeneratedValue
     @Column(name = "topic_of_interest_id")
     private Long topicOfInterestId;
-    @Column(name = "name", unique = true)
-    @Id
+    @Column(name = "name")
     private String name;
 
     public TopicOfInterest(String name) {
@@ -33,6 +29,14 @@ public class TopicOfInterest {
         return IntStream.range(0, names.size())
                         .mapToObj(i -> new TopicOfInterest(names.get(i)))
                         .collect(Collectors.toList());
+    }
+
+    public static List<TopicOfInterest> nonExistsTopic(List<String> requestMissionOfTopicInterestsNames, List<String> existsTopicOfInterests) {
+        List<String> nonExistsTopic = requestMissionOfTopicInterestsNames.stream()
+                                                                         .filter(origin -> existsTopicOfInterests.stream()
+                                                                                                                 .noneMatch(exists -> exists.equals(origin)))
+                                                                         .collect(Collectors.toList());
+        return createTopicOfInterestName(nonExistsTopic);
     }
 
 }

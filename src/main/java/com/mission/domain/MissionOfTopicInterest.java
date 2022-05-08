@@ -7,23 +7,31 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
-@Table(name = "mission_of_topic_of_interest")
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 public class MissionOfTopicInterest {
 
     @Id @GeneratedValue
-    @Column(name = "mission_of_topic_of_interest_id")
+    @Column(name = "mission_of_topic_interest_id")
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "topic_of_interest_id"),
-            @JoinColumn(name = "name")
-    })
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "topic_of_interest_id")
     private TopicOfInterest topicOfInterest;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
+
+    public MissionOfTopicInterest(TopicOfInterest topicOfInterest) {
+        this.topicOfInterest = topicOfInterest;
+    }
+
+    public void createMission(Mission mission) {
+        this.mission = mission;
+    }
 
 }
