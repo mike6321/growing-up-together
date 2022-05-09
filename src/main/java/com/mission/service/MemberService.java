@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,36 +47,38 @@ public class MemberService {
 
     Member createMember = memberRepository.save(Member.createMember(memberCreateVO, createGrade));
 
-    topicOfInterests.forEach(topicOfInterest -> createMember.addTopicOfInterests(topicOfInterest));
+    topicOfInterests.forEach(createMember::addTopicOfInterests);
     return createMember;
 
   }
 
   public Member updateMember(MemberUpdateVO memberUpdateVO) {
-    Member findMember = findById(memberUpdateVO.getId());
-    findMember.updateNickname(memberUpdateVO.getNickname());
-    findMember.updateIsWithdrawal(memberUpdateVO.isWithdrawal());
-    findMember.updateIsTopicOfInterestAlarm(memberUpdateVO.isTopicOfInterestAlarm());
     if (isDuplicateEmail(memberUpdateVO.getEmail())) {
       // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
       throw new RuntimeException("중복된 이메일 입니다.");
     }
+
+    Member findMember = findById(memberUpdateVO.getId());
     findMember.updateEmail(memberUpdateVO.getEmail());
-    // TODO bbubbush:: 회원 관심주제 업데이트 로직 추가 예정
+    findMember.updateNickname(memberUpdateVO.getNickname());
+    findMember.updateIsWithdrawal(memberUpdateVO.isWithdrawal());
+    findMember.updateIsTopicOfInterestAlarm(memberUpdateVO.isTopicOfInterestAlarm());
+    updateMemberOfTopics(findMember, memberUpdateVO.getTopicOfInterests());
+
     return findMember;
 
   }
 
   private boolean isDuplicateEmail(String email) {
-    return !memberRepository.findByEmail(email).isEmpty();
+    return memberRepository.findByEmail(email).isPresent();
 
   }
 
   private List<MemberOfTopicInterest> createMemberOfTopics(List<String> topicOfInterests) {
     return topicOfInterests
       .stream()
-      .map(topic -> topicOfInterestRepository.findByName(topic))
-      .filter(topicOfInterest -> topicOfInterest != null)
+      .map(topicOfInterestRepository::findByName)
+      .filter(Objects::nonNull)
       .map(topicOfInterest -> MemberOfTopicInterest.builder()
         .topicOfInterest(topicOfInterest)
         .build())
@@ -83,4 +86,10 @@ public class MemberService {
 
   }
 
+  private void updateMemberOfTopics(Member findMember, List<String> updateTopics) {
+    List<MemberOfTopicInterest> topicOfInterests = createMemberOfTopics(updateTopics);
+    findMember.getTopicOfInterests().clear();
+    topicOfInterests.forEach(findMember::addTopicOfInterests);
+
+  }
 }

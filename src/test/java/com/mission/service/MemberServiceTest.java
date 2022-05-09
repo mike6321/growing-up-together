@@ -1,10 +1,13 @@
 package com.mission.service;
 
-import com.mission.domain.*;
-import com.mission.repository.GradeRepository;
+import com.mission.domain.Grade;
+import com.mission.domain.GradeStaus;
+import com.mission.domain.Member;
+import com.mission.domain.TopicOfInterest;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import com.mission.vo.MemberCreateVO;
+import com.mission.vo.MemberUpdateVO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,8 +32,6 @@ class MemberServiceTest {
   @Mock
   private MemberRepository memberRepository;
   @Mock
-  private GradeRepository gradeRepository;
-  @Mock
   private TopicOfInterestRepository topicOfInterestRepository;
 
 
@@ -51,7 +52,7 @@ class MemberServiceTest {
   public void findMember() {
     // given
     final long memberId = 2L;
-    Member createMember = Member.builder()
+    final Member createMember = Member.builder()
       .id(memberId)
       .nickname("bbubbush")
       .profileImageUrl(null)
@@ -65,7 +66,7 @@ class MemberServiceTest {
       .build();
 
     // when
-    when(memberRepository.findById(any())).thenReturn(Optional.ofNullable(createMember));
+    when(memberRepository.findById(any())).thenReturn(Optional.of(createMember));
     Member findMember = memberService.findById(memberId);
 
     // then
@@ -105,10 +106,10 @@ class MemberServiceTest {
       .id(5L)
       .nickname("bbubbush")
       .profileImageUrl(null)
-      .email("bbubbush99@gmail.com")
+      .email("bbubbush1@gmail.com")
       .participationMissions(new ArrayList<>())
       .topicOfInterests(new ArrayList<>())
-      .grade(Grade.builder().id(4L).gradeStaus(GradeStaus.BEGINNER).build())
+      .grade(Grade.builder().id(99L).gradeStaus(GradeStaus.BEGINNER).build())
       .isTopicOfInterestAlarm(false)
       .isEmailAuthenticate(false)
       .isWithdrawal(false)
@@ -146,7 +147,7 @@ class MemberServiceTest {
       .build();
 
     // when
-    when(memberRepository.findByEmail(createUserEmail)).thenReturn(Optional.ofNullable(null));
+    when(memberRepository.findByEmail(createUserEmail)).thenReturn(Optional.empty());
     when(memberRepository.save(any())).thenReturn(createMember);
 
     Member saveMember = memberService.createMember(createVO);
@@ -196,7 +197,7 @@ class MemberServiceTest {
       .build();
 
     // when
-    when(memberRepository.findByEmail(createUserEmail)).thenReturn(Optional.ofNullable(null));
+    when(memberRepository.findByEmail(createUserEmail)).thenReturn(Optional.empty());
     when(topicOfInterestRepository.findByName("Spring")).thenReturn(TopicOfInterest.builder().topicOfInterestId(0L).name("Spring").build());
     when(topicOfInterestRepository.findByName("Java")).thenReturn(TopicOfInterest.builder().topicOfInterestId(1L).name("Java").build());
     when(memberRepository.save(any())).thenReturn(createMember);
@@ -221,6 +222,103 @@ class MemberServiceTest {
     assertFalse(saveMember.isEmailAuthenticate());
     assertFalse(saveMember.isWithdrawal());
 
+  }
+
+  @Test
+  @DisplayName("회원정보변경_실패_회원조회실패")
+  public void updateMemberFail1() {
+    // given
+    final String expectedMessage = "일치하는 회원을 찾을 수 없습니다.";
+    Member findMember = Member.builder()
+      .id(99L)
+      .nickname("bbubbush")
+      .profileImageUrl(null)
+      .email("bbubbush1@gmail.com")
+      .participationMissions(new ArrayList<>())
+      .topicOfInterests(new ArrayList<>())
+      .grade(Grade.builder().id(99L).gradeStaus(GradeStaus.BEGINNER).build())
+      .isTopicOfInterestAlarm(false)
+      .isEmailAuthenticate(false)
+      .isWithdrawal(false)
+      .build();
+    MemberUpdateVO updateVO = new MemberUpdateVO(findMember.getId(), findMember.getNickname(), findMember.isTopicOfInterestAlarm(), findMember.getProfileImageUrl(), findMember.isEmailAuthenticate(), findMember.isWithdrawal(), findMember.getGrade(), findMember.getEmail(), new ArrayList<>());
+
+    // when
+    RuntimeException memberNotFoundException = assertThrows(RuntimeException.class, () -> memberService.updateMember(updateVO));
+
+    // then
+    assertEquals(expectedMessage, memberNotFoundException.getMessage());
+
+  }
+
+  @Test
+  @DisplayName("회원정보변경_실패_이메일중복")
+  public void updateMemberFail2() {
+    // given
+    final String expectedMessage = "중복된 이메일 입니다.";
+    Member findMember = Member.builder()
+      .id(99L)
+      .nickname("bbubbush")
+      .profileImageUrl(null)
+      .email("bbubbush1@gmail.com")
+      .participationMissions(new ArrayList<>())
+      .topicOfInterests(new ArrayList<>())
+      .grade(Grade.builder().id(99L).gradeStaus(GradeStaus.BEGINNER).build())
+      .isTopicOfInterestAlarm(false)
+      .isEmailAuthenticate(false)
+      .isWithdrawal(false)
+      .build();
+    MemberUpdateVO updateVO = new MemberUpdateVO(findMember.getId(), findMember.getNickname(), findMember.isTopicOfInterestAlarm(), findMember.getProfileImageUrl(), findMember.isEmailAuthenticate(), findMember.isWithdrawal(), findMember.getGrade(), findMember.getEmail(), new ArrayList<>());
+
+    // when
+    when(memberRepository.findById(findMember.getId())).thenReturn(Optional.of(findMember));
+    when(memberRepository.findByEmail(findMember.getEmail())).thenReturn(Optional.of(findMember));
+    RuntimeException duplicateEmailException = assertThrows(RuntimeException.class, () -> memberService.updateMember(updateVO));
+
+    // then
+    assertEquals(expectedMessage, duplicateEmailException.getMessage());
+
+  }
+
+  @Test
+  @DisplayName("회원정보변경_성공_회원관심항목없음")
+  public void updateMemberSuccess1() {
+    // given
+    Member findMember = Member.builder()
+      .id(99L)
+      .nickname("sanghoon")
+      .profileImageUrl(null)
+      .email("bbubbush99@gmail.com")
+      .participationMissions(new ArrayList<>())
+      .topicOfInterests(new ArrayList<>())
+      .grade(Grade.builder().id(99L).gradeStaus(GradeStaus.BEGINNER).build())
+      .isTopicOfInterestAlarm(false)
+      .isEmailAuthenticate(false)
+      .isWithdrawal(false)
+      .build();
+    MemberUpdateVO updateVO = new MemberUpdateVO(findMember.getId(), findMember.getNickname(), findMember.isTopicOfInterestAlarm(), findMember.getProfileImageUrl(), findMember.isEmailAuthenticate(), findMember.isWithdrawal(), findMember.getGrade(), findMember.getEmail(), new ArrayList<>());
+
+    // when
+    when(memberRepository.findById(findMember.getId())).thenReturn(Optional.of(findMember));
+    when(memberRepository.findByEmail(findMember.getEmail())).thenReturn(Optional.empty());
+
+    Member updateMember = memberService.updateMember(updateVO);
+
+    // then
+    assertNotNull(updateMember.getNickname());
+
+    assertNull(updateMember.getProfileImageUrl());
+
+    assertNotNull(updateMember.getParticipationMissions());
+
+    assertNotNull(updateMember.getTopicOfInterests());
+
+    assertNotNull(updateMember.getGrade());
+    assertNotNull(updateMember.getGrade().getGradeStaus());
+
+    assertFalse(updateMember.isTopicOfInterestAlarm());
+    assertFalse(updateMember.isEmailAuthenticate());
+    assertFalse(updateMember.isWithdrawal());
   }
 
 }
