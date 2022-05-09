@@ -26,5 +26,6 @@ public class TopicOfInterest {
         memberOfTopicInterests.add(memberOfTopicInterest);
         memberOfTopicInterest.setTopicOfInterest(this);
     }
+
 }
 

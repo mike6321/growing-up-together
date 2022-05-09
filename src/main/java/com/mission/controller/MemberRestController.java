@@ -19,55 +19,48 @@ public class MemberRestController {
   @GetMapping("/{memberId}")
   public ResponseEntity findMember(@PathVariable Long memberId) {
     return ResponseEntity.ok(memberService.findById(memberId));
-
   }
 
   @GetMapping("/list")
   public ResponseEntity findMembers() {
     return ResponseEntity.ok(memberService.findAll());
-
   }
 
   @PostMapping
   public ResponseEntity createMember(@RequestBody @Valid MemberCreateVO memberCreateVO) {
     return ResponseEntity.ok(memberService.createMember(memberCreateVO));
-
   }
 
   @PutMapping
   public ResponseEntity updateMember(@RequestBody @Valid MemberUpdateVO memberUpdateVO) {
     return ResponseEntity.ok(memberService.updateMember(memberUpdateVO));
-
   }
 
   /**************
-    TODO List
+   * TODO List
    **************/
   @PostMapping("/login/email")
   public ResponseEntity loginByEmail() {
     // TODO bbubbush :: 시큐리티 설정 이후 개발 예정
     return ResponseEntity.ok("");
-
   }
 
   @PostMapping("/logout")
   public ResponseEntity logout() {
     // TODO bbubbush :: 시큐리티 설정 이후 개발 예정
     return ResponseEntity.ok("");
-
   }
 
   @DeleteMapping("/delete")
   public ResponseEntity deleteAccount() {
     // TODO bbubbush :: 시큐리티 설정 이후 개발 예정
     return ResponseEntity.ok("");
-
   }
 
   @PutMapping("/profileImage")
   public ResponseEntity updateProfileImageUrl() {
     // TODO bbubbush :: 파일 업로드 적용 후 개발 예정
     return ResponseEntity.ok("");
-
   }
+
 }

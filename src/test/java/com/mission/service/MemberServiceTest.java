@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @Transactional
 class MemberServiceTest {
+
   @InjectMocks
   private MemberService memberService;
   @Mock
@@ -93,7 +94,6 @@ class MemberServiceTest {
     assertFalse(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
-
   }
 
   @Test
@@ -122,7 +122,6 @@ class MemberServiceTest {
 
     // then
     assertEquals(expectedMessage, duplicateEmailException.getMessage());
-
   }
 
   @Test
@@ -169,7 +168,6 @@ class MemberServiceTest {
     assertFalse(saveMember.isTopicOfInterestAlarm());
     assertFalse(saveMember.isEmailAuthenticate());
     assertFalse(saveMember.isWithdrawal());
-
   }
 
   @Test
@@ -221,7 +219,6 @@ class MemberServiceTest {
     assertFalse(saveMember.isTopicOfInterestAlarm());
     assertFalse(saveMember.isEmailAuthenticate());
     assertFalse(saveMember.isWithdrawal());
-
   }
 
   @Test
@@ -248,7 +245,6 @@ class MemberServiceTest {
 
     // then
     assertEquals(expectedMessage, memberNotFoundException.getMessage());
-
   }
 
   @Test
@@ -271,13 +267,11 @@ class MemberServiceTest {
     MemberUpdateVO updateVO = new MemberUpdateVO(findMember.getId(), findMember.getNickname(), findMember.isTopicOfInterestAlarm(), findMember.getProfileImageUrl(), findMember.isEmailAuthenticate(), findMember.isWithdrawal(), findMember.getGrade(), findMember.getEmail(), new ArrayList<>());
 
     // when
-    when(memberRepository.findById(findMember.getId())).thenReturn(Optional.of(findMember));
     when(memberRepository.findByEmail(findMember.getEmail())).thenReturn(Optional.of(findMember));
     RuntimeException duplicateEmailException = assertThrows(RuntimeException.class, () -> memberService.updateMember(updateVO));
 
     // then
     assertEquals(expectedMessage, duplicateEmailException.getMessage());
-
   }
 
   @Test

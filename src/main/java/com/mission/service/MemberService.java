@@ -17,7 +17,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
@@ -25,14 +24,15 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final TopicOfInterestRepository topicOfInterestRepository;
 
+  @Transactional(readOnly = true)
   public Member findById(Long memberId) {
     return memberRepository.findById(memberId)
       .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));  // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
   }
 
+  @Transactional(readOnly = true)
   public Iterable<Member> findAll() {
     return memberRepository.findAll();
-
   }
 
   public Member createMember(MemberCreateVO memberCreateVO) {
@@ -49,7 +49,6 @@ public class MemberService {
 
     topicOfInterests.forEach(createMember::addTopicOfInterests);
     return createMember;
-
   }
 
   public Member updateMember(MemberUpdateVO memberUpdateVO) {
@@ -66,30 +65,26 @@ public class MemberService {
     updateMemberOfTopics(findMember, memberUpdateVO.getTopicOfInterests());
 
     return findMember;
-
   }
 
   private boolean isDuplicateEmail(String email) {
     return memberRepository.findByEmail(email).isPresent();
-
   }
 
   private List<MemberOfTopicInterest> createMemberOfTopics(List<String> topicOfInterests) {
-    return topicOfInterests
-      .stream()
+    return topicOfInterests.stream()
       .map(topicOfInterestRepository::findByName)
       .filter(Objects::nonNull)
       .map(topicOfInterest -> MemberOfTopicInterest.builder()
         .topicOfInterest(topicOfInterest)
         .build())
       .collect(Collectors.toList());
-
   }
 
   private void updateMemberOfTopics(Member findMember, List<String> updateTopics) {
     List<MemberOfTopicInterest> topicOfInterests = createMemberOfTopics(updateTopics);
     findMember.getTopicOfInterests().clear();
     topicOfInterests.forEach(findMember::addTopicOfInterests);
-
   }
+
 }

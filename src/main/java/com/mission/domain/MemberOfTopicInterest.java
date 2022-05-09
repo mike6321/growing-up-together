@@ -26,11 +26,10 @@ public class MemberOfTopicInterest {
 
     public void setMember(Member member) {
         this.member = member;
-
     }
 
     public void setTopicOfInterest(TopicOfInterest topicOfInterest) {
         this.topicOfInterest = topicOfInterest;
-
     }
+
 }

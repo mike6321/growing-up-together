@@ -4,7 +4,6 @@ import com.mission.domain.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -24,9 +23,6 @@ class MemberRepositoryTest {
 
   @Autowired
   private MemberRepository memberRepository;
-
-  @Mock
-  private GradeRepository gradeRepository;
 
   @Test
   @DisplayName("회원조회_관심항목있음")
@@ -71,7 +67,6 @@ class MemberRepositoryTest {
     assertTrue(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
-
   }
 
   @Test
@@ -112,7 +107,6 @@ class MemberRepositoryTest {
     assertTrue(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
-
   }
 
   @Test
@@ -171,7 +165,6 @@ class MemberRepositoryTest {
     assertEquals(expectedTopicOfInterestAlarm, member.isTopicOfInterestAlarm());
     assertEquals(expectedEmailAuthenticate, member.isEmailAuthenticate());
     assertEquals(expectedWithdrawal, member.isWithdrawal());
-
   }
 
   @Test
@@ -220,7 +213,6 @@ class MemberRepositoryTest {
 
     assertEquals(expectedTopicOfInterestAlarm, findMember.isTopicOfInterestAlarm());
     assertEquals(expectedEmailAuthenticate, findMember.isEmailAuthenticate());
-
   }
 
   @Test
@@ -235,7 +227,7 @@ class MemberRepositoryTest {
 
     // when
     Member findMember = memberRepository.findByEmail(expectedEmail)
-      .orElse(null);
+      .orElseThrow(RuntimeException::new);
 
     // then
     assertNotNull(findMember);
@@ -267,7 +259,6 @@ class MemberRepositoryTest {
     assertTrue(findMember.isTopicOfInterestAlarm());
     assertFalse(findMember.isEmailAuthenticate());
     assertFalse(findMember.isWithdrawal());
-
   }
 
 }

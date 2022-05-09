@@ -23,12 +23,10 @@ public class Grade {
 
     public void addPoint(long point) {
         this.point += point;
-
     }
 
     public void updateStatus(GradeStaus gradeStaus) {
         this.gradeStaus = gradeStaus;
-
     }
 
     public static Grade createBeginnerGrade() {
@@ -37,4 +35,5 @@ public class Grade {
           .gradeStaus(GradeStaus.BEGINNER)
           .build();
     }
+
 }
