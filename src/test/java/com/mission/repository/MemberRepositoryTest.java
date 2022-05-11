@@ -12,9 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class) @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -28,237 +28,225 @@ class MemberRepositoryTest {
   @DisplayName("회원조회_관심항목있음")
   void findMemberInterestSpringAndJava() {
     // given
-    final long expectedId = 7L;
-    final String expectedNickname = "bbubbush";
-    final String expectedNameOfTopicOfInterest = "Spring,Java";
-    final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
+    final Member createMember = memberRepository.save(createMemberSpringAndJavaInterest());
+    final Long expectedId = createMember.getId();
 
     // when
-    Member findMember = memberRepository.findById(expectedId)
+    final Member findMember = memberRepository.findById(expectedId)
       .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
 
     // then
-    assertNotNull(findMember);
-    assertNotNull(findMember.getId());
-    assertNotEquals(0L, findMember.getId());
-    assertEquals(expectedId, findMember.getId());
-
-    assertNotNull(findMember.getNickname());
-    assertEquals(expectedNickname, findMember.getNickname());
-
-    assertNull(findMember.getProfileImageUrl());
-
-    assertNotNull(findMember.getParticipationMissions());
-    assertEquals(expectedParticipationMissions, findMember.getParticipationMissions());
-    assertEquals(0, findMember.getParticipationMissions().size());
-
-    assertNotNull(findMember.getTopicOfInterests());
-    assertEquals(2, findMember.getTopicOfInterests().size());
-    assertEquals(expectedNameOfTopicOfInterest, findMember.getTopicOfInterests()
-      .stream()
-      .map(MemberOfTopicInterest::getTopicOfInterest)
-      .map(TopicOfInterest::getName)
-      .collect(Collectors.joining(","))
-    );
-
-    assertNotNull(findMember.getGrade());
-    assertEquals(GradeStaus.BEGINNER, findMember.getGrade().getGradeStaus());
-
-    assertTrue(findMember.isTopicOfInterestAlarm());
-    assertFalse(findMember.isEmailAuthenticate());
-    assertFalse(findMember.isWithdrawal());
+    assertThat(findMember).isNotNull();
+    assertThat(findMember.getId()).isNotNull()
+      .isGreaterThan(0L)
+      .isEqualTo(expectedId);
+    assertThat(findMember.getNickname()).isNotNull()
+      .isNotEmpty();
+    assertThat(findMember.getEmail()).isNotNull()
+      .isNotEmpty();
+    assertThat(findMember.getProfileImageUrl()).isNull();
+    assertThat(findMember.getParticipationMissions()).isNotNull();
+    assertThat(findMember.getParticipationMissions().size()).isEqualTo(0L);
+    assertThat(findMember.getTopicOfInterests()).isNotNull();
+    assertThat(findMember.getTopicOfInterests().size()).isEqualTo(2L);
+    assertThat(findMember.getGrade()).isNotNull();
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
+    assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
+    assertThat(findMember.isEmailAuthenticate()).isFalse();
+    assertThat(findMember.isWithdrawal()).isFalse();
   }
 
   @Test
   @DisplayName("회원조회_관심항목없음")
   void findMemberNotInterestedEverything() {
     // given
-    final long expectedId = 5L;
-    final String expectedNickname = "bbubbush";
-    final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
-    long expectedHasPoint = 0L;
+    final Member createMember = memberRepository.save(createMemberNothingInterest());
+    final long expectedId = createMember.getId();
 
     // when
-    Member findMember = memberRepository.findById(expectedId)
+    final Member findMember = memberRepository.findById(expectedId)
       .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
 
     // then
-    assertNotNull(findMember);
-    assertNotNull(findMember.getId());
-    assertNotEquals(0L, findMember.getId());
-    assertEquals(expectedId, findMember.getId());
-
-    assertNotNull(findMember.getNickname());
-    assertEquals(expectedNickname, findMember.getNickname());
-
-    assertNull(findMember.getProfileImageUrl());
-
-    assertNotNull(findMember.getParticipationMissions());
-    assertEquals(expectedParticipationMissions, findMember.getParticipationMissions());
-    assertEquals(0, findMember.getParticipationMissions().size());
-
-    assertNotNull(findMember.getTopicOfInterests());
-    assertEquals(0, findMember.getTopicOfInterests().size());
-
-    assertNotNull(findMember.getGrade());
-    assertEquals(GradeStaus.BEGINNER, findMember.getGrade().getGradeStaus());
-    assertEquals(expectedHasPoint, findMember.getGrade().getPoint());
-
-    assertTrue(findMember.isTopicOfInterestAlarm());
-    assertFalse(findMember.isEmailAuthenticate());
-    assertFalse(findMember.isWithdrawal());
+    assertThat(findMember).isNotNull();
+    assertThat(findMember.getId()).isNotNull()
+      .isGreaterThan(0L)
+      .isEqualTo(expectedId);
+    assertThat(findMember.getNickname()).isNotNull()
+      .isNotEmpty();
+    assertThat(findMember.getEmail()).isNotNull()
+      .isNotEmpty();
+    assertThat(findMember.getProfileImageUrl()).isNull();
+    assertThat(findMember.getParticipationMissions()).isNotNull();
+    assertThat(findMember.getParticipationMissions().size()).isEqualTo(0L);
+    assertThat(findMember.getTopicOfInterests()).isNotNull();
+    assertThat(findMember.getTopicOfInterests().size()).isEqualTo(0L);
+    assertThat(findMember.getGrade()).isNotNull();
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
+    assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
+    assertThat(findMember.isEmailAuthenticate()).isFalse();
+    assertThat(findMember.isWithdrawal()).isFalse();
   }
 
   @Test
   @DisplayName("회원등록")
   void createMemberBasic() {
     // given
-    final String expectedNickname = "bbubbush";
-    final String expectedEmail = "bbubbush@gmail.com";
-    final String expectedProfileImageUrl = "/image/bbubbush/profile.png";
-    final boolean expectedEmailAuthenticate = false;
-    final boolean expectedTopicOfInterestAlarm = true;
-    final boolean expectedWithdrawal = false;
-    final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
-    final List<MemberOfTopicInterest> expectedTopicOfInterests = new ArrayList(){};
-    Grade createGrade = Grade.builder()
-      .gradeStaus(GradeStaus.BEGINNER)
-      .build();
-
-    Member createMember = Member.builder()
-      .email(expectedEmail)
-      .nickname(expectedNickname)
-      .profileImageUrl(expectedProfileImageUrl)
-      .isEmailAuthenticate(expectedEmailAuthenticate)
-      .isTopicOfInterestAlarm(expectedTopicOfInterestAlarm)
-      .isWithdrawal(expectedWithdrawal)
-      .participationMissions(expectedParticipationMissions)
-      .topicOfInterests(expectedTopicOfInterests)
-      .grade(createGrade)
-      .build();
 
     // when
-    Member member = memberRepository.save(createMember);
+    final Member createMember = memberRepository.save(createMemberSpringAndJavaInterest());
 
     // then
-    assertNotNull(member);
-    assertNotNull(member.getId());
-    assertNotEquals(0L, member.getId());
-
-    assertNotNull(member.getNickname());
-    assertEquals(expectedNickname, member.getNickname());
-
-    assertNotNull(member.getProfileImageUrl());
-    assertEquals(expectedProfileImageUrl, member.getProfileImageUrl());
-
-    assertNotNull(member.getParticipationMissions());
-    assertEquals(expectedParticipationMissions, member.getParticipationMissions());
-    assertEquals(0, member.getParticipationMissions().size());
-
-    assertNotNull(member.getTopicOfInterests());
-    assertEquals(0, member.getTopicOfInterests().size());
-
-    assertNotNull(member.getGrade());
-    assertEquals(0L, member.getGrade().getPoint());
-    assertEquals(GradeStaus.BEGINNER, member.getGrade().getGradeStaus());
-
-    assertEquals(expectedTopicOfInterestAlarm, member.isTopicOfInterestAlarm());
-    assertEquals(expectedEmailAuthenticate, member.isEmailAuthenticate());
-    assertEquals(expectedWithdrawal, member.isWithdrawal());
+    assertThat(createMember).isNotNull();
+    assertThat(createMember.getId()).isNotNull()
+      .isNotEqualTo(0L)
+      .isGreaterThan(0L);
+    assertThat(createMember.getNickname()).isNotNull()
+      .isNotEmpty();
+    assertThat(createMember.getEmail()).isNotNull()
+      .isNotEmpty();
+    assertThat(createMember.getProfileImageUrl()).isNull();
+    assertThat(createMember.getParticipationMissions()).isNotNull();
+    assertThat(createMember.getParticipationMissions().size()).isEqualTo(0L);
+    assertThat(createMember.getTopicOfInterests()).isNotNull();
+    assertThat(createMember.getTopicOfInterests().size()).isEqualTo(2L);
+    assertThat(createMember.getGrade()).isNotNull();
+    assertThat(createMember.getGrade().getPoint()).isEqualTo(0L);
+    assertThat(createMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(createMember.isTopicOfInterestAlarm()).isTrue();
+    assertThat(createMember.isEmailAuthenticate()).isFalse();
+    assertThat(createMember.isWithdrawal()).isFalse();
   }
 
   @Test
   @DisplayName("회원정보변경")
   void updateMemberBasic() {
     // given
-    final Long expectedMemberId = 7L;
-    final String expectedNickname = "aauaaush";
-    final String expectedEmail = "bbubbush@naver.com";
-    final String expectedProfileImageUrl = "/image/bbubbush/profile123.png";
-    final boolean expectedEmailAuthenticate = true;
-    final boolean expectedTopicOfInterestAlarm = true;
-    final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
+    final Member createMember = memberRepository.save(createMemberNothingInterest());
+    final Long targetMemId = createMember.getId();
 
-    Member findMember = memberRepository.findById(expectedMemberId)
+    final String updateNewNickname = "bbubbush001";
+    final String updateNewEmail = "bbubbush@naver.com";
+    final String expectedProfileImageUrl = "/image/bbubbush/profile123.png";
+    final boolean updateNewEmailAuthenticate = true;
+    final boolean updateNewTopicOfInterestAlarm = true;
+    final List<MemberOfTopicInterest> expectedMemberTopics = createMemberOfInterestOfTopic();
+
+    final Member findMember = memberRepository.findById(targetMemId)
       .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
 
     // when
-    findMember.updateNickname(expectedNickname);
-    findMember.updateEmail(expectedEmail);
+    findMember.updateNickname(updateNewNickname);
+    findMember.updateEmail(updateNewEmail);
     findMember.updateProfileImageUrl(expectedProfileImageUrl);
-    findMember.updateIsEmailAuthenticate(expectedEmailAuthenticate);
-    findMember.updateIsTopicOfInterestAlarm(expectedTopicOfInterestAlarm);
+    findMember.updateIsEmailAuthenticate(updateNewEmailAuthenticate);
+    findMember.updateIsTopicOfInterestAlarm(updateNewTopicOfInterestAlarm);
+    createMemberOfInterestOfTopic().forEach(findMember::addTopicOfInterests);
 
     // then
-    assertNotNull(findMember);
-    assertNotNull(findMember.getId());
-    assertNotEquals(0L, findMember.getId());
-
-    assertNotNull(findMember.getNickname());
-    assertEquals(expectedNickname, findMember.getNickname());
-
-    assertNotNull(findMember.getProfileImageUrl());
-    assertEquals(expectedProfileImageUrl, findMember.getProfileImageUrl());
-
-    assertNotNull(findMember.getParticipationMissions());
-    assertEquals(expectedParticipationMissions, findMember.getParticipationMissions());
-    assertEquals(0, findMember.getParticipationMissions().size());
-
-    assertNotNull(findMember.getTopicOfInterests());
-    assertEquals(2, findMember.getTopicOfInterests().size());
-
-    assertNotNull(findMember.getGrade());
-    assertEquals(0L, findMember.getGrade().getPoint());
-    assertEquals(GradeStaus.BEGINNER, findMember.getGrade().getGradeStaus());
-
-    assertEquals(expectedTopicOfInterestAlarm, findMember.isTopicOfInterestAlarm());
-    assertEquals(expectedEmailAuthenticate, findMember.isEmailAuthenticate());
+    assertThat(findMember).isNotNull();
+    assertThat(findMember.getId()).isNotEqualTo(0L);
+    assertThat(findMember.getId()).isGreaterThan(0L);
+    assertThat(findMember.getNickname()).isNotNull();
+    assertThat(findMember.getNickname()).isNotEmpty();
+    assertThat(findMember.getNickname()).isEqualTo(updateNewNickname);
+    assertThat(findMember.getEmail()).isNotNull();
+    assertThat(findMember.getEmail()).isNotEmpty();
+    assertThat(findMember.getEmail()).isEqualTo(updateNewEmail);
+    assertThat(findMember.getProfileImageUrl()).isNotNull();
+    assertThat(findMember.getProfileImageUrl()).isNotEmpty();
+    assertThat(findMember.getProfileImageUrl()).isEqualTo(expectedProfileImageUrl);
+    assertThat(findMember.getParticipationMissions()).isNotNull();
+    assertThat(findMember.getParticipationMissions().size()).isEqualTo(0L);
+    assertThat(findMember.getTopicOfInterests()).isNotNull();
+    assertThat(findMember.getTopicOfInterests().size()).isEqualTo(2L);
+    IntStream.range(0, findMember.getTopicOfInterests().size())
+      .forEach(i -> assertThat(findMember.getTopicOfInterests().get(i).getTopicOfInterest().getName()).
+        isEqualTo(expectedMemberTopics.get(i).getTopicOfInterest().getName()));
+    assertThat(findMember.getGrade()).isNotNull();
+    assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
+    assertThat(findMember.isEmailAuthenticate()).isTrue();
+    assertThat(findMember.isWithdrawal()).isFalse();
   }
 
   @Test
   @DisplayName("회원조회_이메일")
   void findMemberByEmail() {
     // given
-    final long expectedId = 5L;
-    final String expectedEmail = "bbubbush1@gmail.com";
-    final String expectedNickname = "bbubbush";
-    final String expectedNameOfTopicOfInterest = "";
-    final List<ParticipationMission> expectedParticipationMissions = new ArrayList();
+    final Member createMember = memberRepository.save(createMemberNothingInterest());
 
     // when
-    Member findMember = memberRepository.findByEmail(expectedEmail)
+    final Member findMember = memberRepository.findByEmail(createMember.getEmail())
       .orElseThrow(RuntimeException::new);
 
     // then
-    assertNotNull(findMember);
-    assertNotNull(findMember.getId());
-    assertNotEquals(0L, findMember.getId());
-    assertEquals(expectedId, findMember.getId());
+    assertThat(findMember).isNotNull();
+    assertThat(findMember.getId()).isNotEqualTo(0L);
+    assertThat(findMember.getId()).isGreaterThan(0L);
+    assertThat(findMember.getNickname()).isNotNull();
+    assertThat(findMember.getNickname()).isNotEmpty();
+    assertThat(findMember.getProfileImageUrl()).isNull();
+    assertThat(findMember.getParticipationMissions()).isNotNull();
+    assertThat(findMember.getParticipationMissions().size()).isEqualTo(0L);
+    assertThat(findMember.getTopicOfInterests()).isNotNull();
+    assertThat(findMember.getTopicOfInterests().size()).isEqualTo(0L);
+    assertThat(findMember.getGrade()).isNotNull();
+    assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
+    assertThat(findMember.isEmailAuthenticate()).isFalse();
+    assertThat(findMember.isWithdrawal()).isFalse();
+  }
 
-    assertNotNull(findMember.getNickname());
-    assertEquals(expectedNickname, findMember.getNickname());
+  private Member createMemberSpringAndJavaInterest() {
+    return Member.builder()
+      .email("bbubbush99@gmail.com")
+      .nickname("bbubbush99")
+      .isEmailAuthenticate(false)
+      .isTopicOfInterestAlarm(true)
+      .isWithdrawal(false)
+      .participationMissions(new ArrayList<>())
+      .topicOfInterests(createMemberOfInterestOfTopic())
+      .grade(createBeginnerGrade())
+      .build();
+  }
 
-    assertNull(findMember.getProfileImageUrl());
+  private Member createMemberNothingInterest() {
+    return Member.builder()
+      .email("bbubbush99@gmail.com")
+      .nickname("bbubbush99")
+      .isEmailAuthenticate(false)
+      .isTopicOfInterestAlarm(true)
+      .isWithdrawal(false)
+      .participationMissions(new ArrayList<>())
+      .topicOfInterests(new ArrayList<>())
+      .grade(createBeginnerGrade())
+      .build();
+  }
 
-    assertNotNull(findMember.getParticipationMissions());
-    assertEquals(expectedParticipationMissions, findMember.getParticipationMissions());
-    assertEquals(0, findMember.getParticipationMissions().size());
+  private Grade createBeginnerGrade() {
+    return Grade.builder()
+      .gradeStaus(GradeStaus.BEGINNER)
+      .build();
+  }
 
-    assertNotNull(findMember.getTopicOfInterests());
-    assertEquals(0, findMember.getTopicOfInterests().size());
-    assertEquals(expectedNameOfTopicOfInterest, findMember.getTopicOfInterests()
-      .stream()
-      .map(MemberOfTopicInterest::getTopicOfInterest)
-      .map(TopicOfInterest::getName)
-      .collect(Collectors.joining(","))
-    );
-
-    assertNotNull(findMember.getGrade());
-    assertEquals(GradeStaus.BEGINNER, findMember.getGrade().getGradeStaus());
-
-    assertTrue(findMember.isTopicOfInterestAlarm());
-    assertFalse(findMember.isEmailAuthenticate());
-    assertFalse(findMember.isWithdrawal());
+  private List<MemberOfTopicInterest> createMemberOfInterestOfTopic() {
+    List<MemberOfTopicInterest> topicOfInterests = new ArrayList<>();
+    topicOfInterests.add(MemberOfTopicInterest.builder()
+      .topicOfInterest(TopicOfInterest.builder()
+        .name("Spring")
+        .build())
+      .build());
+    topicOfInterests.add(MemberOfTopicInterest.builder()
+      .topicOfInterest(TopicOfInterest.builder()
+        .name("Java")
+        .build())
+      .build());
+    return topicOfInterests;
   }
 
 }
