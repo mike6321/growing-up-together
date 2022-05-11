@@ -14,6 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "mission_of_topic_of_interest")
 public class MissionOfTopicInterest {
 
     @Id @GeneratedValue
