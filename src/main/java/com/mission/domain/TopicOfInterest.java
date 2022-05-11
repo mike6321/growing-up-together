@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Entity
+@Entity @Getter
 @Table(name = "topic_of_interest")
 @Getter
 @NoArgsConstructor
@@ -20,6 +20,13 @@ public class TopicOfInterest {
     private Long topicOfInterestId;
     @Column(name = "name")
     private String name;
+    @OneToMany(mappedBy = "topicOfInterest")
+    private List<MemberOfTopicInterest> memberOfTopicInterests = new ArrayList();
+
+    public void addMemberOfTopicInterest(MemberOfTopicInterest memberOfTopicInterest) {
+        memberOfTopicInterests.add(memberOfTopicInterest);
+        memberOfTopicInterest.setTopicOfInterest(this);
+    }
 
     public TopicOfInterest(String name) {
         this.name = name;
@@ -40,3 +47,4 @@ public class TopicOfInterest {
     }
 
 }
+

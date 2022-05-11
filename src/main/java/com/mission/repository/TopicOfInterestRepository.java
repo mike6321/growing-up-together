@@ -10,5 +10,6 @@ import java.util.List;
 public interface TopicOfInterestRepository extends JpaRepository<TopicOfInterest, Long> {
 
     List<TopicOfInterest> findByNameIn(List<String> topicInterestsNames);
+    TopicOfInterest findByName(String name);
 
 }
