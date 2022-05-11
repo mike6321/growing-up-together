@@ -1,20 +1,39 @@
 package com.mission.domain;
 
-import lombok.Getter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Entity
+@Entity @Getter
 @Table(name = "grade")
-@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Grade {
 
     @Id
     @GeneratedValue
     @Column(name = "grade_id")
     private Long id;
-    @Embedded
+    @Column(name = "grade_status")
+    @Enumerated(EnumType.STRING)
     private GradeStaus gradeStaus;
+    @Column(name = "point")
     private long point;
+
+    public void addPoint(long point) {
+        this.point += point;
+    }
+
+    public void updateStatus(GradeStaus gradeStaus) {
+        this.gradeStaus = gradeStaus;
+    }
+
+    public static Grade createBeginnerGrade() {
+        return Grade.builder()
+          .point(0L)
+          .gradeStaus(GradeStaus.BEGINNER)
+          .build();
+    }
 
 }

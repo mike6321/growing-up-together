@@ -1,15 +1,22 @@
 package com.mission.domain;
 
+import com.mission.dto.mission.RequestCreateMission;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "mission")
-@Getter
+@Getter @NoArgsConstructor
+@AllArgsConstructor(staticName = "of")
+@Builder
+@Entity @Table(name = "mission")
+@DynamicUpdate
 public class Mission {
 
     @Id @GeneratedValue
@@ -18,7 +25,7 @@ public class Mission {
     @Column(name = "subject")
     private String subject;
     @Embedded
-    private Holiday holiday;
+    private Holiday holiday = new Holiday();
     @Column(name = "numberOfParticipants")
     private int numberOfParticipants;
     @Column(name = "creator")
@@ -27,8 +34,23 @@ public class Mission {
     private LocalDateTime startDate;
     @Column(name = "endDate")
     private LocalDateTime endDate;
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "mission_of_topic_of_interest_id")
+    @OneToMany(mappedBy = "mission")
     private List<MissionOfTopicInterest> missionOfTopicInterests = new ArrayList<>();
+
+    public void createMission(RequestCreateMission requestCreateMission, List<MissionOfTopicInterest> missionOfTopicInterests) {
+        this.subject = requestCreateMission.getSubject();
+        this.holiday = requestCreateMission.getHoliday();
+        this.numberOfParticipants = requestCreateMission.getNumberOfParticipants();
+        this.creator = requestCreateMission.getCreator();
+        this.startDate = requestCreateMission.getStartDate();
+        this.endDate = requestCreateMission.getEndDate();
+        missionOfTopicInterests.stream()
+                               .forEach(this::addMissionOfTopicInterests);
+    }
+
+    public void addMissionOfTopicInterests(MissionOfTopicInterest missionOfTopicInterest) {
+        this.missionOfTopicInterests.add(missionOfTopicInterest);
+        missionOfTopicInterest.createMission(this);
+    }
 
 }

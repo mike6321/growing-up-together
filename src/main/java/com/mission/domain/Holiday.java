@@ -1,10 +1,14 @@
 package com.mission.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class Holiday {
 

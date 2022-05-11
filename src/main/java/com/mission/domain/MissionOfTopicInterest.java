@@ -1,20 +1,38 @@
 package com.mission.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
-@Table(name = "mission_of_topic_of_interest")
 @Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "mission_of_topic_of_interest")
 public class MissionOfTopicInterest {
 
     @Id @GeneratedValue
-    @Column(name = "mission_of_topic_of_interest_id")
+    @Column(name = "mission_of_topic_interest_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "topic_of_interest_id")
     private TopicOfInterest topicOfInterest;
-    // TODO 단방향
-    //private Mission mission;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "mission_id")
+    private Mission mission;
+
+    public MissionOfTopicInterest(TopicOfInterest topicOfInterest) {
+        this.topicOfInterest = topicOfInterest;
+    }
+
+    public void createMission(Mission mission) {
+        this.mission = mission;
+    }
 
 }
