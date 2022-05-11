@@ -1,6 +1,7 @@
 package com.mission.domain;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.stream.IntStream;
 @Builder
 @Entity @Getter
 @Table(name = "topic_of_interest")
+@AllArgsConstructor
 @NoArgsConstructor
 public class TopicOfInterest {
 

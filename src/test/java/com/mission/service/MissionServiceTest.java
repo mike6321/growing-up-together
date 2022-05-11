@@ -153,7 +153,7 @@ class MissionServiceTest {
         Mission mission = missionRepository.findById(missionId)
                 .orElseThrow(EntityNotFoundException::new);
         List<MissionOfTopicInterest> missionOfTopicInterests = mission.getMissionOfTopicInterests();
-        assertThat(missionOfTopicInterests.size()).isEqualTo(5);
+        assertThat(missionOfTopicInterests.size()).isEqualTo(3);
     }
 
     private Long saveMission() {

@@ -34,8 +34,7 @@ public class TopicOfInterestService {
                 .stream()
                 .map(TopicOfInterest::getName)
                 .collect(Collectors.toList());
-        List<TopicOfInterest> nonExistsTopicOfInterests = TopicOfInterest.nonExistsTopic(missionOfTopicInterestsNames, existsTopicOfInterests);
-        return nonExistsTopicOfInterests;
+        return TopicOfInterest.nonExistsTopic(missionOfTopicInterestsNames, existsTopicOfInterests);
     }
 
 }

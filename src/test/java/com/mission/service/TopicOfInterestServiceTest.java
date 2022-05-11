@@ -44,7 +44,7 @@ class TopicOfInterestServiceTest {
     @Test
     public void create_mission_of_topic_interests_test() throws Exception {
         // when
-        topicOfInterestService.createMissionOfTopicInterests(missionOfTopicInterestsNames);
+        topicOfInterestService.getMissionOfTopicInterests(requestCreateMission);
         // then
         List<TopicOfInterest> topicOfInterests = topicOfInterestRepository.findByNameIn(missionOfTopicInterestsNames);
         assertThat(topicOfInterests.size()).isEqualTo(2);
