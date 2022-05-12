@@ -1,8 +1,9 @@
 package com.mission.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mission.vo.MemberCreateVO;
+import com.mission.dto.member.ReqCreateMember;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
+@DynamicUpdate @Builder
 public class Member {
 
     @Id @GeneratedValue
@@ -38,10 +39,9 @@ public class Member {
     private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
-    @JsonIgnore
     private Grade grade;
 
-    public static Member createMember(MemberCreateVO memberCreateVO, Grade memberGrade) {
+    public static Member createMember(ReqCreateMember memberCreateVO, Grade memberGrade) {
         return Member.builder()
           .email(memberCreateVO.getEmail())
           .nickname(memberCreateVO.getNickname())

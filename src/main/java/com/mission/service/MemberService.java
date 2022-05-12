@@ -3,12 +3,13 @@ package com.mission.service;
 import com.mission.domain.Grade;
 import com.mission.domain.Member;
 import com.mission.domain.MemberOfTopicInterest;
+import com.mission.dto.member.ReqCreateMember;
+import com.mission.dto.member.ReqUpdateMember;
+import com.mission.dto.member.ResFindMember;
+import com.mission.dto.member.ResModifyMember;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
-import com.mission.vo.MemberCreateVO;
-import com.mission.vo.MemberUpdateVO;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,17 +26,19 @@ public class MemberService {
   private final TopicOfInterestRepository topicOfInterestRepository;
 
   @Transactional(readOnly = true)
-  public Member findById(Long memberId) {
-    return memberRepository.findById(memberId)
-      .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));  // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
+  public ResFindMember findById(Long memberId) {
+    return ResFindMember.of(getFindMember(memberId));
   }
 
   @Transactional(readOnly = true)
-  public Iterable<Member> findAll() {
-    return memberRepository.findAll();
+  public List<ResFindMember> findAll() {
+    return memberRepository.findAll()
+      .stream()
+      .map(ResFindMember::of)
+      .collect(Collectors.toList());
   }
 
-  public Member createMember(MemberCreateVO memberCreateVO) {
+  public ResModifyMember createMember(ReqCreateMember memberCreateVO) {
     if (isDuplicateEmail(memberCreateVO.getEmail())) {
       // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
       throw new RuntimeException("중복된 이메일 입니다.");
@@ -48,23 +51,28 @@ public class MemberService {
     Member createMember = memberRepository.save(Member.createMember(memberCreateVO, createGrade));
 
     topicOfInterests.forEach(createMember::addTopicOfInterests);
-    return createMember;
+    return ResModifyMember.of(createMember.getId());
   }
 
-  public Member updateMember(MemberUpdateVO memberUpdateVO) {
+  public ResModifyMember updateMember(ReqUpdateMember memberUpdateVO) {
     if (isDuplicateEmail(memberUpdateVO.getEmail())) {
       // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
       throw new RuntimeException("중복된 이메일 입니다.");
     }
 
-    Member findMember = findById(memberUpdateVO.getId());
+    Member findMember = getFindMember(memberUpdateVO.getId());
     findMember.updateEmail(memberUpdateVO.getEmail());
     findMember.updateNickname(memberUpdateVO.getNickname());
-    findMember.updateIsWithdrawal(memberUpdateVO.isWithdrawal());
     findMember.updateIsTopicOfInterestAlarm(memberUpdateVO.isTopicOfInterestAlarm());
     updateMemberOfTopics(findMember, memberUpdateVO.getTopicOfInterests());
 
-    return findMember;
+    return ResModifyMember.of(findMember.getId());
+  }
+
+  private Member getFindMember(Long memberId) {
+    // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
+    return memberRepository.findById(memberId)
+      .orElseThrow(() -> new RuntimeException("일치하는 회원을 찾을 수 없습니다."));
   }
 
   private boolean isDuplicateEmail(String email) {

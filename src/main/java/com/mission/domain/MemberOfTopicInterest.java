@@ -17,11 +17,9 @@ public class MemberOfTopicInterest {
     private Long memberOfTopicOfInterestId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_of_interest_id")
-    @JsonIgnore
     private TopicOfInterest topicOfInterest;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @JsonIgnore
     private Member member;
 
     public void setMember(Member member) {
