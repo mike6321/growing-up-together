@@ -1,6 +1,6 @@
 package com.mission.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mission.domain.common.BaseTimeEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,12 +10,12 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class MemberOfTopicInterest {
+public class MemberOfTopicInterest extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_of_topic_of_interest_id")
     private Long memberOfTopicOfInterestId;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "topic_of_interest_id")
     private TopicOfInterest topicOfInterest;
     @ManyToOne(fetch = FetchType.LAZY)

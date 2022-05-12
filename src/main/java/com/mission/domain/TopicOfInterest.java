@@ -1,6 +1,7 @@
 package com.mission.domain;
 
 
+import com.mission.domain.common.BaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Table(name = "topic_of_interest")
 @AllArgsConstructor
 @NoArgsConstructor
-public class TopicOfInterest {
+public class TopicOfInterest extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "topic_of_interest_id")

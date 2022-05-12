@@ -1,5 +1,6 @@
 package com.mission.domain;
 
+import com.mission.domain.common.BaseTimeEntity;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DynamicUpdate @Builder
-public class Grade {
+public class Grade extends BaseTimeEntity {
 
     @Id
     @GeneratedValue

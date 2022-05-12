@@ -1,6 +1,6 @@
 package com.mission.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mission.domain.common.BaseTimeEntity;
 import com.mission.dto.member.ReqCreateMember;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DynamicUpdate @Builder
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -61,6 +61,12 @@ public class Member {
     public void addTopicOfInterests(MemberOfTopicInterest memberOfTopicInterest) {
         topicOfInterests.add(memberOfTopicInterest);
         memberOfTopicInterest.setMember(this);
+    }
+
+    public void deleteTopicOfInterests() {
+        topicOfInterests.forEach(memberOfTopicInterest -> memberOfTopicInterest.setMember(null));
+        topicOfInterests = new ArrayList<>();
+
     }
 
     /* Setter */
