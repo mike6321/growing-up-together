@@ -2,7 +2,7 @@ package com.mission.service;
 
 import com.mission.domain.Holiday;
 import com.mission.domain.TopicOfInterest;
-import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.ReqCreateMission;
 import com.mission.repository.TopicOfInterestRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,13 +23,13 @@ class TopicOfInterestServiceTest {
     @Autowired private TopicOfInterestRepository topicOfInterestRepository;
 
     private List<String> missionOfTopicInterestsNames;
-    private RequestCreateMission requestCreateMission;
+    private ReqCreateMission reqCreateMission;
 
     @BeforeEach
     void initRequestData() {
         missionOfTopicInterestsNames = List.of("Spring", "Devops");
         Holiday holiday = new Holiday(true, false, false, true, true, true, true);
-        requestCreateMission = RequestCreateMission.builder()
+        reqCreateMission = ReqCreateMission.builder()
                 .subject("미션1")
                 .holiday(holiday)
                 .numberOfParticipants(3)
@@ -44,7 +44,7 @@ class TopicOfInterestServiceTest {
     @Test
     public void create_mission_of_topic_interests_test() throws Exception {
         // when
-        topicOfInterestService.getMissionOfTopicInterests(requestCreateMission);
+        topicOfInterestService.getMissionOfTopicInterests(reqCreateMission);
         // then
         List<TopicOfInterest> topicOfInterests = topicOfInterestRepository.findByNameIn(missionOfTopicInterestsNames);
         assertThat(topicOfInterests.size()).isEqualTo(2);

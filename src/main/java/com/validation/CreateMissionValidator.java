@@ -1,6 +1,6 @@
 package com.validation;
 
-import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.ReqCreateMission;
 import com.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.Errors;
@@ -13,14 +13,14 @@ public class CreateMissionValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return clazz.isAssignableFrom(RequestCreateMission.class);
+        return clazz.isAssignableFrom(ReqCreateMission.class);
     }
 
     @Override
     public void validate(Object target, Errors errors) {
-        RequestCreateMission requestCreateMission = (RequestCreateMission) target;
-        if (missionRepository.existsBySubject(requestCreateMission.getSubject())) {
-            errors.rejectValue("subject", "invalid.subject", new Object[]{requestCreateMission.getSubject()}, "이미 사용중인 주제입니다.");
+        ReqCreateMission reqCreateMission = (ReqCreateMission) target;
+        if (missionRepository.existsBySubject(reqCreateMission.getSubject())) {
+            errors.rejectValue("subject", "invalid.subject", new Object[]{reqCreateMission.getSubject()}, "이미 사용중인 주제입니다.");
         }
     }
 

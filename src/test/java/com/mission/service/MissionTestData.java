@@ -1,8 +1,8 @@
 package com.mission.service;
 
 import com.mission.domain.Holiday;
-import com.mission.dto.mission.RequestCreateMission;
-import com.mission.dto.mission.RequestUpdateMission;
+import com.mission.dto.mission.ReqCreateMission;
+import com.mission.dto.mission.ReqUpdateMission;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,8 +17,8 @@ public class MissionTestData {
     private final static LocalDateTime END_DATE = LocalDateTime.now().plusDays(7);
     private final static List<String> MISSION_OF_TOPIC_INTERESTS = List.of("Spring", "Devops");
 
-    public static RequestCreateMission createMissionData() {
-        return RequestCreateMission.builder()
+    public static ReqCreateMission createMissionData() {
+        return ReqCreateMission.builder()
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
                 .numberOfParticipants(NUMBER_OF_PARTICIPANTS)
@@ -29,10 +29,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateSubjectData(Long missionId) {
+    public static ReqUpdateMission updateSubjectData(Long missionId) {
         String subject = "미션1";
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(subject)
                 .holiday(HOLIDAY)
@@ -44,10 +44,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateHolidayData(Long missionId) {
+    public static ReqUpdateMission updateHolidayData(Long missionId) {
         Holiday holiday = new Holiday(false, true, true, true, true, true, true);
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(holiday)
@@ -59,10 +59,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateNumberOfParticipantsData(Long missionId) {
+    public static ReqUpdateMission updateNumberOfParticipantsData(Long missionId) {
         int numberOfParticipants = 2;
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -74,10 +74,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateCreatorData(Long missionId) {
+    public static ReqUpdateMission updateCreatorData(Long missionId) {
         String creator = "sanghoon.lee";
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -89,10 +89,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateStartDateData(Long missionId) {
+    public static ReqUpdateMission updateStartDateData(Long missionId) {
         LocalDateTime startDate = LocalDateTime.now().plusDays(1);
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -104,10 +104,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateEndDateData(Long missionId) {
+    public static ReqUpdateMission updateEndDateData(Long missionId) {
         LocalDateTime endDate = LocalDateTime.now().plusDays(3);
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)
@@ -119,10 +119,10 @@ public class MissionTestData {
                 .build();
     }
 
-    public static RequestUpdateMission updateMissionOfTopicInterestsData(Long missionId) {
+    public static ReqUpdateMission updateMissionOfTopicInterestsData(Long missionId) {
         List<String> missionOfTopicInterests = List.of("Spring", "Devops", "React");
 
-        return RequestUpdateMission.builder()
+        return ReqUpdateMission.builder()
                 .missionId(missionId)
                 .subject(SUBJECT)
                 .holiday(HOLIDAY)

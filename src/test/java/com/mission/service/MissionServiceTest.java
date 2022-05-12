@@ -2,8 +2,8 @@ package com.mission.service;
 
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
-import com.mission.dto.mission.RequestCreateMission;
-import com.mission.dto.mission.RequestUpdateMission;
+import com.mission.dto.mission.ReqCreateMission;
+import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.repository.MissionRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,11 +23,11 @@ class MissionServiceTest {
 
     @Autowired private MissionService missionService;
     @Autowired private MissionRepository missionRepository;
-    private RequestCreateMission requestCreateMission;
+    private ReqCreateMission reqCreateMission;
 
     @BeforeEach
     void initRequestData() {
-        requestCreateMission = MissionTestData.createMissionData();
+        reqCreateMission = MissionTestData.createMissionData();
     }
 
     @DisplayName("미션생성 테스트")
@@ -40,14 +40,14 @@ class MissionServiceTest {
                                            .orElseThrow(EntityNotFoundException::new);
         // then
         assertThat(missionId).isNotNull();
-        assertThat(mission.getSubject()).isEqualTo(requestCreateMission.getSubject());
-        assertThat(mission.getHoliday()).isEqualTo(requestCreateMission.getHoliday());
-        assertThat(mission.getNumberOfParticipants()).isEqualTo(requestCreateMission.getNumberOfParticipants());
-        assertThat(mission.getCreator()).isEqualTo(requestCreateMission.getCreator());
-        assertThat(mission.getStartDate()).isEqualTo(requestCreateMission.getStartDate());
-        assertThat(mission.getEndDate()).isEqualTo(requestCreateMission.getEndDate());
+        assertThat(mission.getSubject()).isEqualTo(reqCreateMission.getSubject());
+        assertThat(mission.getHoliday()).isEqualTo(reqCreateMission.getHoliday());
+        assertThat(mission.getNumberOfParticipants()).isEqualTo(reqCreateMission.getNumberOfParticipants());
+        assertThat(mission.getCreator()).isEqualTo(reqCreateMission.getCreator());
+        assertThat(mission.getStartDate()).isEqualTo(reqCreateMission.getStartDate());
+        assertThat(mission.getEndDate()).isEqualTo(reqCreateMission.getEndDate());
         IntStream.range(0, mission.getMissionOfTopicInterests().size())
-                 .forEach(i -> assertThat(mission.getMissionOfTopicInterests().get(i).getTopicOfInterest().getName()).isEqualTo(requestCreateMission.getMissionOfTopicInterests().get(i)));
+                 .forEach(i -> assertThat(mission.getMissionOfTopicInterests().get(i).getTopicOfInterest().getName()).isEqualTo(reqCreateMission.getMissionOfTopicInterests().get(i)));
     }
 
     @DisplayName("미션 수정 테스트 - subject")
@@ -56,7 +56,7 @@ class MissionServiceTest {
     public void update_mission_subject() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateSubjectData = MissionTestData.updateSubjectData(missionId);
+        ReqUpdateMission updateSubjectData = MissionTestData.updateSubjectData(missionId);
         // when
         missionService.updateMissionInformation(updateSubjectData);
         // then
@@ -71,7 +71,7 @@ class MissionServiceTest {
     public void update_mission_holiday() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateHolidayData = MissionTestData.updateHolidayData(missionId);
+        ReqUpdateMission updateHolidayData = MissionTestData.updateHolidayData(missionId);
         // when
         missionService.updateMissionInformation(updateHolidayData);
         // then
@@ -86,7 +86,7 @@ class MissionServiceTest {
     public void update_mission_numberOfParticipants() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateNumberOfParticipantsData = MissionTestData.updateNumberOfParticipantsData(missionId);
+        ReqUpdateMission updateNumberOfParticipantsData = MissionTestData.updateNumberOfParticipantsData(missionId);
         // when
         missionService.updateMissionInformation(updateNumberOfParticipantsData);
         // then
@@ -101,7 +101,7 @@ class MissionServiceTest {
     public void update_mission_creator() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateCreatorData = MissionTestData.updateCreatorData(missionId);
+        ReqUpdateMission updateCreatorData = MissionTestData.updateCreatorData(missionId);
         // when
         missionService.updateMissionInformation(updateCreatorData);
         // then
@@ -116,7 +116,7 @@ class MissionServiceTest {
     public void update_mission_startDate() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateStartDateData = MissionTestData.updateStartDateData(missionId);
+        ReqUpdateMission updateStartDateData = MissionTestData.updateStartDateData(missionId);
         // when
         missionService.updateMissionInformation(updateStartDateData);
         // then
@@ -131,7 +131,7 @@ class MissionServiceTest {
     public void update_mission_endDate() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateEndDateData = MissionTestData.updateEndDateData(missionId);
+        ReqUpdateMission updateEndDateData = MissionTestData.updateEndDateData(missionId);
         // when
         missionService.updateMissionInformation(updateEndDateData);
         // then
@@ -146,7 +146,7 @@ class MissionServiceTest {
     public void update_mission_missionOfTopicInterests() throws Exception {
         // given
         Long missionId = saveMission();
-        RequestUpdateMission updateMissionOfTopicInterestsData = MissionTestData.updateMissionOfTopicInterestsData(missionId);
+        ReqUpdateMission updateMissionOfTopicInterestsData = MissionTestData.updateMissionOfTopicInterestsData(missionId);
         // when
         missionService.updateMissionInformation(updateMissionOfTopicInterestsData);
         // then
@@ -157,7 +157,7 @@ class MissionServiceTest {
     }
 
     private Long saveMission() {
-        return missionService.saveMission(requestCreateMission);
+        return missionService.saveMission(reqCreateMission);
     }
 
 }

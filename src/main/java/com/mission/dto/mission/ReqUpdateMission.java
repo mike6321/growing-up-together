@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor
 @SuperBuilder
-public class RequestUpdateMission extends RequestCreateMission {
+public class ReqUpdateMission extends ReqCreateMission {
 
     @NotNull
     private Long missionId;

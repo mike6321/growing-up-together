@@ -1,6 +1,6 @@
 package com.mission.domain;
 
-import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.ReqCreateMission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class Mission {
     private String subject;
     @Embedded
     private Holiday holiday = new Holiday();
-    @Column(name = "numberOfParticipants")
+    @Column(name = "number_of_participants")
     private int numberOfParticipants;
     @Column(name = "creator")
     private String creator;
@@ -37,15 +37,17 @@ public class Mission {
     @OneToMany(mappedBy = "mission")
     private List<MissionOfTopicInterest> missionOfTopicInterests = new ArrayList<>();
 
-    public void createMission(RequestCreateMission requestCreateMission, List<MissionOfTopicInterest> missionOfTopicInterests) {
-        this.subject = requestCreateMission.getSubject();
-        this.holiday = requestCreateMission.getHoliday();
-        this.numberOfParticipants = requestCreateMission.getNumberOfParticipants();
-        this.creator = requestCreateMission.getCreator();
-        this.startDate = requestCreateMission.getStartDate();
-        this.endDate = requestCreateMission.getEndDate();
-        missionOfTopicInterests.stream()
-                               .forEach(this::addMissionOfTopicInterests);
+    public void createMission(ReqCreateMission reqCreateMission,
+                              List<MissionOfTopicInterest> missionOfTopicInterests) {
+        this.subject = reqCreateMission.getSubject();
+        this.holiday = reqCreateMission.getHoliday();
+        this.numberOfParticipants = reqCreateMission.getNumberOfParticipants();
+        this.creator = reqCreateMission.getCreator();
+        this.startDate = reqCreateMission.getStartDate();
+        this.endDate = reqCreateMission.getEndDate();
+        missionOfTopicInterests
+                .stream()
+                .forEach(this::addMissionOfTopicInterests);
     }
 
     public void addMissionOfTopicInterests(MissionOfTopicInterest missionOfTopicInterest) {

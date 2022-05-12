@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class RequestCreateMission {
+public class ReqCreateMission {
 
     private Long missionId;
     @NotEmpty

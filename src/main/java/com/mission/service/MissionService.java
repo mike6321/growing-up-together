@@ -2,8 +2,8 @@ package com.mission.service;
 
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
-import com.mission.dto.mission.RequestCreateMission;
-import com.mission.dto.mission.RequestUpdateMission;
+import com.mission.dto.mission.ReqCreateMission;
+import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.repository.MissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,37 +14,33 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MissionService {
 
     private final TopicOfInterestService topicOfInterestService;
     private final MissionRepository missionRepository;
 
-    @Transactional
-    public Long saveMission(RequestCreateMission requestCreateMission) {
-        List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestCreateMission);
+    public Long saveMission(ReqCreateMission reqCreateMission) {
+        List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(reqCreateMission);
         Mission mission = new Mission();
-        mission.createMission(requestCreateMission, missionOfTopicInterests);
+        mission.createMission(reqCreateMission, missionOfTopicInterests);
         return missionRepository.save(mission)
                                 .getId();
     }
 
-    @Transactional
-    public Long updateMissionInformation(RequestUpdateMission requestUpdateMission) {
+    public Long updateMissionInformation(ReqUpdateMission requestUpdateMission) {
         Long missionId = requestUpdateMission.getMissionId();
         Mission mission = missionRepository.findById(missionId)
                                            .orElseThrow(EntityNotFoundException::new);
 
         List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestUpdateMission);
-
         mission.createMission(requestUpdateMission, missionOfTopicInterests);
-
         return missionRepository.save(mission)
                                 .getId();
     }
 
-    private List<MissionOfTopicInterest> getMissionOfTopicInterests(RequestCreateMission requestCreateMission) {
-        List<MissionOfTopicInterest> missionOfTopicInterests = topicOfInterestService.getMissionOfTopicInterests(requestCreateMission);
-        return missionOfTopicInterests;
+    private List<MissionOfTopicInterest> getMissionOfTopicInterests(ReqCreateMission reqCreateMission) {
+        return topicOfInterestService.getMissionOfTopicInterests(reqCreateMission);
     }
 
 }
