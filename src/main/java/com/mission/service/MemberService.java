@@ -80,7 +80,8 @@ public class MemberService {
   private List<MemberOfTopicInterest> createMemberOfTopics(List<String> topicOfInterests) {
     final List<TopicOfInterest> existTopics = topicOfInterestRepository.findByNameIn(topicOfInterests);
 
-    final List<String> existTopicNames = existTopics.stream()
+    final List<String> existTopicNames = existTopics
+      .stream()
       .map(TopicOfInterest::getName)
       .collect(Collectors.toList());
 

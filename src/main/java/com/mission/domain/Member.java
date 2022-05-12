@@ -42,7 +42,8 @@ public class Member {
     private Grade grade;
 
     public static Member createMember(ReqCreateMember memberCreateVO, List<MemberOfTopicInterest> topicOfInterests) {
-        final Member createMember = Member.builder()
+        final Member createMember = Member
+          .builder()
           .email(memberCreateVO.getEmail())
           .nickname(memberCreateVO.getNickname())
           .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())

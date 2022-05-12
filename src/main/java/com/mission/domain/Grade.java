@@ -31,7 +31,8 @@ public class Grade {
     }
 
     public static Grade createBeginnerGrade() {
-        return Grade.builder()
+        return Grade
+          .builder()
           .point(0L)
           .gradeStaus(GradeStaus.BEGINNER)
           .build();
