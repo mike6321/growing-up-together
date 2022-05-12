@@ -1,6 +1,5 @@
 package com.mission.service;
 
-import com.mission.domain.Grade;
 import com.mission.domain.Member;
 import com.mission.domain.MemberOfTopicInterest;
 import com.mission.domain.TopicOfInterest;
@@ -8,6 +7,7 @@ import com.mission.dto.member.ReqCreateMember;
 import com.mission.dto.member.ReqUpdateMember;
 import com.mission.dto.member.ResFindMember;
 import com.mission.dto.member.ResModifyMember;
+import com.mission.repository.MemberOfTopicOfInterestRepository;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 public class MemberService {
 
   private final MemberRepository memberRepository;
+  private final MemberOfTopicOfInterestRepository memberOfTopicOfInterestRepository;
   private final TopicOfInterestRepository topicOfInterestRepository;
 
   @Transactional(readOnly = true)
@@ -103,7 +104,10 @@ public class MemberService {
 
   private void updateMemberOfTopics(Member findMember, List<String> updateTopics) {
     List<MemberOfTopicInterest> topicOfInterests = createMemberOfTopics(updateTopics);
-    findMember.getTopicOfInterests().clear();
+
+    memberOfTopicOfInterestRepository.deleteByMember(findMember);
+    findMember.deleteTopicOfInterests();
+
     topicOfInterests.forEach(findMember::addTopicOfInterests);
   }
 

@@ -5,6 +5,7 @@ import com.mission.dto.member.ReqCreateMember;
 import com.mission.dto.member.ReqUpdateMember;
 import com.mission.dto.member.ResFindMember;
 import com.mission.dto.member.ResModifyMember;
+import com.mission.repository.MemberOfTopicOfInterestRepository;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,8 @@ class MemberServiceTest {
   private MemberService memberService;
   @Mock
   private MemberRepository memberRepository;
+  @Mock
+  private MemberOfTopicOfInterestRepository memberOfTopicOfInterestRepository;
   @Mock
   private TopicOfInterestRepository topicOfInterestRepository;
 
@@ -147,6 +150,7 @@ class MemberServiceTest {
 
     // when
     when(memberRepository.findByEmail(findMember.getEmail())).thenReturn(Optional.empty());
+    when(memberOfTopicOfInterestRepository.deleteByMember(findMember)).thenReturn(0);
     when(memberRepository.findById(updateVO.getId())).thenReturn(Optional.of(findMember));
 
     final ResModifyMember updateMember = memberService.updateMember(updateVO);
