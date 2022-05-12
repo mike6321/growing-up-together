@@ -25,7 +25,7 @@ public class TopicOfInterest {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "topicOfInterest")
-    private List<MemberOfTopicInterest> memberOfTopicInterests = new ArrayList();
+    private List<MemberOfTopicInterest> memberOfTopicInterests = new ArrayList<>();
 
     public void addMemberOfTopicInterest(MemberOfTopicInterest memberOfTopicInterest) {
         memberOfTopicInterests.add(memberOfTopicInterest);
@@ -37,16 +37,19 @@ public class TopicOfInterest {
     }
 
     public static List<TopicOfInterest> createTopicOfInterestName(List<String> names) {
-        return IntStream.range(0, names.size())
-                        .mapToObj(i -> new TopicOfInterest(names.get(i)))
-                        .collect(Collectors.toList());
+        return names
+          .stream()
+          .map(TopicOfInterest::new)
+          .collect(Collectors.toList());
     }
 
     public static List<TopicOfInterest> nonExistsTopic(List<String> requestMissionOfTopicInterestsNames, List<String> existsTopicOfInterests) {
-        List<String> nonExistsTopic = requestMissionOfTopicInterestsNames.stream()
-                                                                         .filter(origin -> existsTopicOfInterests.stream()
-                                                                                                                 .noneMatch(exists -> exists.equals(origin)))
-                                                                         .collect(Collectors.toList());
+        List<String> nonExistsTopic = requestMissionOfTopicInterestsNames
+          .stream()
+          .filter(origin -> existsTopicOfInterests
+            .stream()
+            .noneMatch(exists -> exists.equals(origin)))
+          .collect(Collectors.toList());
         return createTopicOfInterestName(nonExistsTopic);
     }
 

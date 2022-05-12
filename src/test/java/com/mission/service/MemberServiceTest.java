@@ -73,8 +73,8 @@ class MemberServiceTest {
     assertThat(findMember.getTopicOfInterests()).isNotNull();
     assertThat(findMember.getTopicOfInterests().size()).isEqualTo(0L);
     assertThat(findMember.getGrade()).isNotNull();
-    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
-    assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
+    assertThat(findMember.getGrade()).isEqualTo(GradeStaus.BEGINNER.toString());
+    assertThat(findMember.getPoint()).isEqualTo(0L);
     assertThat(findMember.isTopicOfInterestAlarm()).isFalse();
     assertThat(findMember.isEmailAuthenticate()).isFalse();
     assertThat(findMember.isWithdrawal()).isFalse();

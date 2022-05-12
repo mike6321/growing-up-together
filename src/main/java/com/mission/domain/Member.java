@@ -31,23 +31,25 @@ public class Member {
     private String email;
     @OneToMany(mappedBy = "member")
     @Builder.Default
-    private List<ParticipationMission> participationMissions = new ArrayList();
+    private List<ParticipationMission> participationMissions = new ArrayList<>();
     @Column(name = "is_withdrawal")
     private boolean isWithdrawal;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
+    private List<MemberOfTopicInterest> topicOfInterests = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
     private Grade grade;
 
-    public static Member createMember(ReqCreateMember memberCreateVO, Grade memberGrade) {
-        return Member.builder()
+    public static Member createMember(ReqCreateMember memberCreateVO, List<MemberOfTopicInterest> topicOfInterests) {
+        final Member createMember = Member.builder()
           .email(memberCreateVO.getEmail())
           .nickname(memberCreateVO.getNickname())
           .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
-          .grade(memberGrade)
+          .grade(Grade.createBeginnerGrade())
           .build();
+        topicOfInterests.forEach(createMember::addTopicOfInterests);
+        return createMember;
     }
 
     public void addParticipationMission(ParticipationMission participationMission) {

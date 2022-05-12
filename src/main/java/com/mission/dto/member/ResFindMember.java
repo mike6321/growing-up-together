@@ -1,13 +1,11 @@
 package com.mission.dto.member;
 
-import com.mission.domain.Grade;
-import com.mission.domain.Member;
-import com.mission.domain.MemberOfTopicInterest;
-import com.mission.domain.ParticipationMission;
+import com.mission.domain.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter @NoArgsConstructor
 @AllArgsConstructor
@@ -20,10 +18,11 @@ public class ResFindMember {
   private String profileImageUrl;
   private boolean isEmailAuthenticate;
   private String email;
-  private List<ParticipationMission> participationMissions = new ArrayList<>();
+  private List<String> participationMissions = new ArrayList<>();
   private boolean isWithdrawal;
-  private List<MemberOfTopicInterest> topicOfInterests = new ArrayList<>();
-  private Grade grade;
+  private List<String> topicOfInterests = new ArrayList<>();
+  private String grade;
+  private Long point;
 
   public static ResFindMember of (final Member member) {
     return new ResFindMember(member.getId(),
@@ -32,10 +31,19 @@ public class ResFindMember {
       member.getProfileImageUrl(),
       member.isEmailAuthenticate(),
       member.getEmail(),
-      member.getParticipationMissions(),
+      member.getParticipationMissions()
+        .stream()
+        .map(ParticipationMission::getMission)
+        .map(Mission::getSubject)
+        .collect(Collectors.toList()),
       member.isWithdrawal(),
-      member.getTopicOfInterests(),
-      member.getGrade()
+      member.getTopicOfInterests()
+        .stream()
+        .map(MemberOfTopicInterest::getTopicOfInterest)
+        .map(TopicOfInterest::getName)
+        .collect(Collectors.toList()),
+      member.getGrade().getGradeStaus().toString(),
+      member.getGrade().getPoint()
     );
   }
 
