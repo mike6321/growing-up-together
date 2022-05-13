@@ -1,6 +1,8 @@
 package com.mission.domain;
 
+import com.mission.domain.common.BaseTimeEntity;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -8,8 +10,8 @@ import javax.persistence.*;
 @Table(name = "grade")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-public class Grade {
+@DynamicUpdate @Builder
+public class Grade extends BaseTimeEntity {
 
     @Id
     @GeneratedValue
@@ -30,7 +32,8 @@ public class Grade {
     }
 
     public static Grade createBeginnerGrade() {
-        return Grade.builder()
+        return Grade
+          .builder()
           .point(0L)
           .gradeStaus(GradeStaus.BEGINNER)
           .build();

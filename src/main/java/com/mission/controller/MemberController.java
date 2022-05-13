@@ -1,40 +1,42 @@
 package com.mission.controller;
 
-import com.mission.domain.Member;
+import com.mission.dto.member.ReqCreateMember;
+import com.mission.dto.member.ReqUpdateMember;
+import com.mission.dto.member.ResFindMember;
+import com.mission.dto.member.ResModifyMember;
 import com.mission.service.MemberService;
-import com.mission.vo.MemberCreateVO;
-import com.mission.vo.MemberUpdateVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/member")
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
-public class MemberRestController {
+public class MemberController {
 
   private final MemberService memberService;
 
   @GetMapping("/{memberId}")
-  public ResponseEntity<Member> findMember(@PathVariable Long memberId) {
+  public ResponseEntity<ResFindMember> findMember(@PathVariable Long memberId) {
     return ResponseEntity.ok(memberService.findById(memberId));
   }
 
   @GetMapping("/list")
-  public ResponseEntity<Iterable<Member>> findMembers() {
+  public ResponseEntity<List<ResFindMember>> findMembers() {
     return ResponseEntity.ok(memberService.findAll());
   }
 
   @PostMapping
-  public ResponseEntity<Member> createMember(@RequestBody @Valid MemberCreateVO memberCreateVO) {
+  public ResponseEntity<ResModifyMember> createMember(@RequestBody @Valid ReqCreateMember memberCreateVO) {
     return ResponseEntity.ok(memberService.createMember(memberCreateVO));
   }
 
   @PutMapping
-  public ResponseEntity<Member> updateMember(@RequestBody @Valid MemberUpdateVO memberUpdateVO) {
-    return ResponseEntity.ok(memberService.updateMember(memberUpdateVO));
+  public ResponseEntity<ResModifyMember> updateMember(@RequestBody @Valid ReqUpdateMember reqUpdateMember) {
+    return ResponseEntity.ok(memberService.updateMember(reqUpdateMember));
   }
 
   /**************

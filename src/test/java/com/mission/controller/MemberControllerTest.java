@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mission.domain.Grade;
 import com.mission.domain.GradeStaus;
 import com.mission.domain.Member;
+import com.mission.dto.member.ReqCreateMember;
+import com.mission.dto.member.ReqUpdateMember;
+import com.mission.dto.member.ResFindMember;
+import com.mission.dto.member.ResModifyMember;
 import com.mission.service.MemberService;
-import com.mission.vo.MemberCreateVO;
-import com.mission.vo.MemberUpdateVO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class MemberRestControllerTest {
+class MemberControllerTest {
+
+  private final static String HOST_NAME = "/api/member";
 
   @Autowired
   private WebApplicationContext webApplicationContext;
@@ -41,7 +45,6 @@ class MemberRestControllerTest {
   private ObjectMapper objectMapper;
   @MockBean
   private MemberService memberService;
-
   private MockMvc mockMvc;
 
   @BeforeEach
@@ -56,14 +59,14 @@ class MemberRestControllerTest {
   @DisplayName("회원조회_성공")
   void findMember() throws Exception {
     // given
-    final Long findMemberId = 1L;
+    final long findMemberId = 1L;
 
     // when
-    when(memberService.findById(any())).thenReturn(createMemberNothingInterest());
+    when(memberService.findById(any())).thenReturn(ResFindMember.of(createFindMember()));
 
     // then
     this.mockMvc
-      .perform(get("/api/v1/member/" + findMemberId)
+      .perform(get(HOST_NAME + "/" + findMemberId)
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
@@ -81,7 +84,7 @@ class MemberRestControllerTest {
 
     // then
     this.mockMvc
-      .perform(get("/api/v1/member/list")
+      .perform(get(HOST_NAME + "/list")
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
@@ -91,16 +94,20 @@ class MemberRestControllerTest {
 
   @Test
   @DisplayName("회원등록_성공")
-  void creaeMember() throws Exception {
+  void createMember() throws Exception {
     // given
-    MemberCreateVO memberCreateVO = createMemberOfNothingInterestVO();
+    final List<String> createUserTopic = new ArrayList<>(){{
+      add("Spring");
+      add("Java");
+    }};
+    ReqCreateMember memberCreateVO = createMemberOfInterestVO(createUserTopic);
 
     // when
-    when(memberService.createMember(memberCreateVO)).thenReturn(createMemberNothingInterest());
+    when(memberService.createMember(memberCreateVO)).thenReturn(createResModifyMember());
 
     // then
     this.mockMvc
-      .perform(post("/api/v1/member")
+      .perform(post(HOST_NAME)
         .content(objectMapper.writeValueAsString(memberCreateVO))
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
@@ -113,14 +120,14 @@ class MemberRestControllerTest {
   @DisplayName("회원정보변경_성공")
   void updateMember() throws Exception {
     // given
-    MemberUpdateVO memberUpdateVO = createUpdateMemberVO();
+    ReqUpdateMember memberUpdateVO = createUpdateMemberVO();
 
     // when
-    when(memberService.updateMember(memberUpdateVO)).thenReturn(createMemberNothingInterest());
+    when(memberService.updateMember(memberUpdateVO)).thenReturn(createResModifyMember());
 
     // then
     this.mockMvc
-      .perform(put("/api/v1/member")
+      .perform(put(HOST_NAME)
         .content(objectMapper.writeValueAsString(memberUpdateVO))
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
@@ -138,7 +145,7 @@ class MemberRestControllerTest {
 
     // then
     this.mockMvc
-      .perform(post("/api/v1/member/login/email")
+      .perform(post(HOST_NAME + "/login/email")
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
@@ -155,7 +162,7 @@ class MemberRestControllerTest {
 
     // then
     this.mockMvc
-      .perform(post("/api/v1/member/logout")
+      .perform(post(HOST_NAME + "/logout")
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
@@ -172,7 +179,7 @@ class MemberRestControllerTest {
 
     // then
     this.mockMvc
-      .perform(delete("/api/v1/member/delete")
+      .perform(delete(HOST_NAME + "/delete")
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
@@ -189,7 +196,7 @@ class MemberRestControllerTest {
 
     // then
     this.mockMvc
-      .perform(put("/api/v1/member/profileImage")
+      .perform(put(HOST_NAME + "/profileImage")
         .contentType(MediaType.APPLICATION_JSON))
       .andDo(print())
       .andExpect(status().isOk())
@@ -197,13 +204,39 @@ class MemberRestControllerTest {
     ;
   }
 
-  private Member createMemberNothingInterest() {
+  private ResModifyMember createResModifyMember() {
+    return ResModifyMember.of(99L);
+  }
+
+  private ReqCreateMember createMemberOfInterestVO(List<String> createUserTopic) {
+    return ReqCreateMember
+      .builder()
+      .nickname("bbubbush99")
+      .email("bbubbush99@gmail.com")
+      .topicOfInterestAlarm(false)
+      .topicOfInterests(createUserTopic)
+      .build();
+  }
+
+  private ReqUpdateMember createUpdateMemberVO() {
+    return ReqUpdateMember
+      .builder()
+      .id(99L)
+      .nickname("bbubbush")
+      .email("bbubbush1@gmail.com")
+      .topicOfInterestAlarm(true)
+      .topicOfInterests(new ArrayList<>())
+      .build();
+  }
+
+  private Member createFindMember() {
     return Member.builder()
       .id(99L)
       .nickname("bbubbush99")
       .profileImageUrl(null)
       .email("bbubbush99@gmail.com")
       .participationMissions(new ArrayList<>())
+      .topicOfInterests(new ArrayList<>())
       .grade(createBeginnerGrade())
       .isTopicOfInterestAlarm(false)
       .isEmailAuthenticate(false)
@@ -217,17 +250,4 @@ class MemberRestControllerTest {
       .gradeStaus(GradeStaus.BEGINNER)
       .build();
   }
-
-  private MemberCreateVO createMemberOfInterestVO(List<String> createUserTopic) {
-    return new MemberCreateVO("bbubbush99", "bbubbush99@gmail.com", false, createUserTopic);
-  }
-
-  private MemberCreateVO createMemberOfNothingInterestVO() {
-    return createMemberOfInterestVO(new ArrayList<>());
-  }
-
-  private MemberUpdateVO createUpdateMemberVO() {
-    return new MemberUpdateVO(99L, "bbubbush", false, null, false, false, createBeginnerGrade(), "bbubbush1@gmail.com", new ArrayList<>());
-  }
-
 }

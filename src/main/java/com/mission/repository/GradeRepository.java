@@ -1,7 +1,6 @@
 package com.mission.repository;
 
 import com.mission.domain.Grade;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GradeRepository extends CrudRepository<Grade, Long> {}
+public interface GradeRepository extends JpaRepository<Grade, Long> {}
