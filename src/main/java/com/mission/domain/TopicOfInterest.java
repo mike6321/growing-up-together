@@ -24,13 +24,9 @@ public class TopicOfInterest extends BaseTimeEntity {
     private Long topicOfInterestId;
     @Column(name = "name")
     private String name;
+    @Builder.Default
     @OneToMany(mappedBy = "topicOfInterest")
     private List<MemberOfTopicInterest> memberOfTopicInterests = new ArrayList<>();
-
-    public void addMemberOfTopicInterest(MemberOfTopicInterest memberOfTopicInterest) {
-        memberOfTopicInterests.add(memberOfTopicInterest);
-        memberOfTopicInterest.setTopicOfInterest(this);
-    }
 
     public TopicOfInterest(String name) {
         this.name = name;
@@ -43,13 +39,13 @@ public class TopicOfInterest extends BaseTimeEntity {
           .collect(Collectors.toList());
     }
 
-    public static List<TopicOfInterest> nonExistsTopic(List<String> requestMissionOfTopicInterestsNames, List<String> existsTopicOfInterests) {
+    public static List<TopicOfInterest> nonExistsTopic(List<String> requestMissionOfTopicInterestsNames,
+                                                       List<String> existsTopicOfInterests) {
         List<String> nonExistsTopic = requestMissionOfTopicInterestsNames
-          .stream()
-          .filter(origin -> existsTopicOfInterests
-            .stream()
-            .noneMatch(exists -> exists.equals(origin)))
-          .collect(Collectors.toList());
+                .stream()
+                .filter(origin -> existsTopicOfInterests.stream()
+                        .noneMatch(exists -> exists.equals(origin)))
+                .collect(Collectors.toList());
         return createTopicOfInterestName(nonExistsTopic);
     }
 

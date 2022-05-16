@@ -4,6 +4,7 @@ import com.mission.domain.Holiday;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Min;
@@ -13,12 +14,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
+@ToString
 @AllArgsConstructor
+@NoArgsConstructor
 @SuperBuilder
-public class RequestCreateMission {
+public class ReqCreateMission {
 
-    private Long missionId;
     @NotEmpty
     private String subject;
     @NotNull
