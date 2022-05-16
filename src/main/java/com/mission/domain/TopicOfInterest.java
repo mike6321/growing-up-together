@@ -24,13 +24,9 @@ public class TopicOfInterest {
     private Long topicOfInterestId;
     @Column(name = "name")
     private String name;
+    @Builder.Default
     @OneToMany(mappedBy = "topicOfInterest")
     private List<MemberOfTopicInterest> memberOfTopicInterests = new ArrayList();
-
-    public void addMemberOfTopicInterest(MemberOfTopicInterest memberOfTopicInterest) {
-        memberOfTopicInterests.add(memberOfTopicInterest);
-        memberOfTopicInterest.setTopicOfInterest(this);
-    }
 
     public TopicOfInterest(String name) {
         this.name = name;

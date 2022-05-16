@@ -1,6 +1,7 @@
 package com.mission.domain;
 
 import com.mission.dto.mission.ReqCreateMission;
+import com.mission.dto.mission.ReqUpdateMission;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @NoArgsConstructor
-@AllArgsConstructor(staticName = "of")
+@AllArgsConstructor
 @Builder
 @Entity @Table(name = "mission")
 @DynamicUpdate
@@ -24,6 +25,7 @@ public class Mission {
     private Long id;
     @Column(name = "subject")
     private String subject;
+    @Builder.Default
     @Embedded
     private Holiday holiday = new Holiday();
     @Column(name = "number_of_participants")
@@ -34,6 +36,7 @@ public class Mission {
     private LocalDateTime startDate;
     @Column(name = "endDate")
     private LocalDateTime endDate;
+    @Builder.Default
     @OneToMany(mappedBy = "mission")
     private List<MissionOfTopicInterest> missionOfTopicInterests = new ArrayList<>();
 
@@ -53,6 +56,19 @@ public class Mission {
     public void addMissionOfTopicInterests(MissionOfTopicInterest missionOfTopicInterest) {
         this.missionOfTopicInterests.add(missionOfTopicInterest);
         missionOfTopicInterest.createMission(this);
+    }
+
+    public static Mission of(ReqUpdateMission reqUpdateMission) {
+        return Mission
+                .builder()
+                .id(reqUpdateMission.getMissionId())
+                .subject(reqUpdateMission.getSubject())
+                .holiday(reqUpdateMission.getHoliday())
+                .numberOfParticipants(reqUpdateMission.getNumberOfParticipants())
+                .creator(reqUpdateMission.getCreator())
+                .startDate(reqUpdateMission.getStartDate())
+                .endDate(reqUpdateMission.getEndDate())
+                .build();
     }
 
 }

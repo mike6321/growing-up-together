@@ -25,18 +25,18 @@ public class MissionService {
         Mission mission = new Mission();
         mission.createMission(reqCreateMission, missionOfTopicInterests);
         return missionRepository.save(mission)
-                                .getId();
+                .getId();
     }
 
     public Long updateMissionInformation(ReqUpdateMission requestUpdateMission) {
         Long missionId = requestUpdateMission.getMissionId();
         Mission mission = missionRepository.findById(missionId)
-                                           .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotFoundException::new);
 
         List<MissionOfTopicInterest> missionOfTopicInterests = getMissionOfTopicInterests(requestUpdateMission);
         mission.createMission(requestUpdateMission, missionOfTopicInterests);
         return missionRepository.save(mission)
-                                .getId();
+                .getId();
     }
 
     private List<MissionOfTopicInterest> getMissionOfTopicInterests(ReqCreateMission reqCreateMission) {

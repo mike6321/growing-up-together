@@ -22,10 +22,7 @@ public class TopicOfInterestService {
 
     public List<MissionOfTopicInterest> getMissionOfTopicInterests(ReqCreateMission reqCreateMission) {
         List<TopicOfInterest> topicOfInterests = createMissionOfTopicInterests(reqCreateMission.getMissionOfTopicInterests());
-        List<MissionOfTopicInterest> missionOfTopicInterests = topicOfInterests
-                .stream()
-                .map(MissionOfTopicInterest::new)
-                .collect(Collectors.toList());
+        List<MissionOfTopicInterest> missionOfTopicInterests = MissionOfTopicInterest.of(topicOfInterests);
         missionOfTopicInterestRepository.saveAll(missionOfTopicInterests);
         return missionOfTopicInterests;
     }
