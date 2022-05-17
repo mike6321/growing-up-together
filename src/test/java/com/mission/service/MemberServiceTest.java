@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -56,9 +56,9 @@ class MemberServiceTest {
   public void findMember() {
     // given
     final Member createMember = createMemberInDb();
+    given(memberRepository.findById(createMember.getId())).willReturn(Optional.of(createMember));
 
     // when
-    when(memberRepository.findById(createMember.getId())).thenReturn(Optional.of(createMember));
     final ResFindMember findMember = memberService.findById(createMember.getId());
 
     // then
@@ -89,10 +89,10 @@ class MemberServiceTest {
     // given
     final String expectedMemberEmail = "bbubbush99@gmail.com";
     final ReqCreateMember createVO = createMemberOfNothingInterestVO();
+    given(memberRepository.findByEmail(expectedMemberEmail)).willReturn(Optional.empty());
+    given(memberRepository.save(any())).willReturn(createMemberNothingInterest());
 
     // when
-    when(memberRepository.findByEmail(expectedMemberEmail)).thenReturn(Optional.empty());
-    when(memberRepository.save(any())).thenReturn(createMemberNothingInterest());
     final ResModifyMember createMember = memberService.createMember(createVO);
 
     // then
@@ -112,10 +112,10 @@ class MemberServiceTest {
       add("Java");
     }};
     final ReqCreateMember createVO = createMemberOfInterestVO(createUserTopic);
+    given(memberRepository.findByEmail(expectedMemberEmail)).willReturn(Optional.empty());
+    given(memberRepository.save(any())).willReturn(createMemberSpringAndJavaInterest());
 
     // when
-    when(memberRepository.findByEmail(expectedMemberEmail)).thenReturn(Optional.empty());
-    when(memberRepository.save(any())).thenReturn(createMemberSpringAndJavaInterest());
     ResModifyMember createMember = memberService.createMember(createVO);
 
     // then
@@ -132,9 +132,9 @@ class MemberServiceTest {
     final String expectedMessage = "중복된 이메일 입니다.";
     final Member findMember = createMemberInDb();
     final ReqCreateMember createVO = createMemberOfNothingInterestVO();
+    given(memberRepository.findByEmail(createVO.getEmail())).willReturn(Optional.of(findMember));
 
     // when
-    when(memberRepository.findByEmail(createVO.getEmail())).thenReturn(Optional.of(findMember));
     RuntimeException duplicateEmailException = assertThrows(RuntimeException.class, () -> memberService.createMember(createVO));
 
     // then
@@ -147,12 +147,11 @@ class MemberServiceTest {
     // given
     final Member findMember = createMemberInDb();
     final ReqUpdateMember updateVO = createUpdateMemberVO();
+    given(memberRepository.findByEmail(findMember.getEmail())).willReturn(Optional.empty());
+    given(memberOfTopicOfInterestRepository.deleteByMember(findMember)).willReturn(0);
+    given(memberRepository.findById(updateVO.getId())).willReturn(Optional.of(findMember));
 
     // when
-    when(memberRepository.findByEmail(findMember.getEmail())).thenReturn(Optional.empty());
-    when(memberOfTopicOfInterestRepository.deleteByMember(findMember)).thenReturn(0);
-    when(memberRepository.findById(updateVO.getId())).thenReturn(Optional.of(findMember));
-
     final ResModifyMember updateMember = memberService.updateMember(updateVO);
 
     // then
@@ -182,9 +181,9 @@ class MemberServiceTest {
     // given
     final String expectedMessage = "중복된 이메일 입니다.";
     final ReqUpdateMember updateVO = createUpdateMemberVO();
+    given(memberRepository.findByEmail(updateVO.getEmail())).willReturn(Optional.of(createMemberNothingInterest()));
 
     // when
-    when(memberRepository.findByEmail(updateVO.getEmail())).thenReturn(Optional.of(createMemberNothingInterest()));
     RuntimeException duplicateEmailException = assertThrows(RuntimeException.class, () -> memberService.updateMember(updateVO));
 
     // then
