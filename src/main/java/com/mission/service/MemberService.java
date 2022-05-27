@@ -11,6 +11,8 @@ import com.mission.repository.MemberOfTopicOfInterestRepository;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +25,13 @@ import java.util.stream.Stream;
 @Transactional
 public class MemberService {
 
+  @Value("{test.why}")
+  private String why;
+
   private final MemberRepository memberRepository;
   private final MemberOfTopicOfInterestRepository memberOfTopicOfInterestRepository;
   private final TopicOfInterestRepository topicOfInterestRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Transactional(readOnly = true)
   public ResFindMember findById(Long memberId) {
@@ -45,16 +51,14 @@ public class MemberService {
       // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
       throw new RuntimeException("중복된 이메일 입니다.");
     }
-
+    memberCreateVO.encodePassword(passwordEncoder.encode(memberCreateVO.getPassword()));
     List<MemberOfTopicInterest> topicOfInterests = createMemberOfTopics(memberCreateVO.getTopicOfInterests());
-
     Member createMember = memberRepository.save(Member.createMember(memberCreateVO, topicOfInterests));
-
     return ResModifyMember.of(createMember.getId());
   }
 
   public ResModifyMember updateMember(ReqUpdateMember memberUpdateVO) {
-    if (isDuplicateEmail(memberUpdateVO.getEmail())) {
+    if (!isDuplicateEmail(memberUpdateVO.getEmail())) {
       // TODO bbubbush :: 예외 생성 및 에러코드 정의 필요
       throw new RuntimeException("중복된 이메일 입니다.");
     }
@@ -75,7 +79,8 @@ public class MemberService {
   }
 
   private boolean isDuplicateEmail(String email) {
-    return memberRepository.findByEmail(email).isPresent();
+    boolean present = memberRepository.findByEmail(email).isPresent();
+    return present;
   }
 
   private List<MemberOfTopicInterest> createMemberOfTopics(List<String> topicOfInterests) {
@@ -112,3 +117,9 @@ public class MemberService {
   }
 
 }
+
+/**
+ *  master -> dev -> feature/security-jw
+ *                -> release/security   ->    feature/security-sh
+ *
+ * */
