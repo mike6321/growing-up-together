@@ -2,6 +2,6 @@ package com.mission.domain;
 
 public enum GradeStaus {
 
-    BEGINNER, JUNIOR, SENIOR
+    ROLE_BEGINNER, ROLE_JUNIOR, ROLE_SENIOR
 
 }

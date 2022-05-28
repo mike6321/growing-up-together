@@ -35,7 +35,7 @@ public class Grade extends BaseTimeEntity {
         return Grade
           .builder()
           .point(0L)
-          .gradeStaus(GradeStaus.BEGINNER)
+          .gradeStaus(GradeStaus.ROLE_BEGINNER)
           .build();
     }
 

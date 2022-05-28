@@ -1,4 +1,4 @@
-package com.mission.security;
+package com.mission.service;
 
 import com.mission.domain.Member;
 import com.mission.repository.MemberRepository;

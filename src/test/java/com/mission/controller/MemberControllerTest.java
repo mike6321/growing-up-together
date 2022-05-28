@@ -247,7 +247,7 @@ class MemberControllerTest {
   private Grade createBeginnerGrade() {
     return Grade.builder()
       .id(99L)
-      .gradeStaus(GradeStaus.BEGINNER)
+      .gradeStaus(GradeStaus.ROLE_BEGINNER)
       .build();
   }
 }

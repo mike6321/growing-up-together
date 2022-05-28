@@ -31,7 +31,6 @@ public class JwtCustomFilter extends AbstractAuthenticationProcessingFilter {
             "/login",
             "POST"
     );
-    private static final String AUTHORITIES_KEY = "auth";
     private final String secret;
     private final long tokenValidityInSeconds;
     private final Key key;
@@ -74,7 +73,7 @@ public class JwtCustomFilter extends AbstractAuthenticationProcessingFilter {
                                             FilterChain chain,
                                             Authentication authentication) {
         String token = createToken(authentication);
-        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + token);
+        response.addHeader(JwtUtils.HEADER_STRING, JwtUtils.TOKEN_PREFIX + token);
     }
 
     private String createToken(Authentication authentication) {
@@ -87,7 +86,7 @@ public class JwtCustomFilter extends AbstractAuthenticationProcessingFilter {
         return Jwts
                 .builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+                .claim(JwtUtils.AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

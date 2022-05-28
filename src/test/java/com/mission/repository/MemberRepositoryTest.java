@@ -50,7 +50,7 @@ class MemberRepositoryTest {
     assertThat(findMember.getTopicOfInterests()).isNotNull();
     assertThat(findMember.getTopicOfInterests().size()).isEqualTo(2L);
     assertThat(findMember.getGrade()).isNotNull();
-    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.ROLE_BEGINNER);
     assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
     assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
     assertThat(findMember.isEmailAuthenticate()).isFalse();
@@ -83,7 +83,7 @@ class MemberRepositoryTest {
     assertThat(findMember.getTopicOfInterests()).isNotNull();
     assertThat(findMember.getTopicOfInterests().size()).isEqualTo(0L);
     assertThat(findMember.getGrade()).isNotNull();
-    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.ROLE_BEGINNER);
     assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
     assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
     assertThat(findMember.isEmailAuthenticate()).isFalse();
@@ -114,7 +114,7 @@ class MemberRepositoryTest {
     assertThat(createMember.getTopicOfInterests().size()).isEqualTo(2L);
     assertThat(createMember.getGrade()).isNotNull();
     assertThat(createMember.getGrade().getPoint()).isEqualTo(0L);
-    assertThat(createMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(createMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.ROLE_BEGINNER);
     assertThat(createMember.isTopicOfInterestAlarm()).isTrue();
     assertThat(createMember.isEmailAuthenticate()).isFalse();
     assertThat(createMember.isWithdrawal()).isFalse();
@@ -167,7 +167,7 @@ class MemberRepositoryTest {
         isEqualTo(expectedMemberTopics.get(i).getTopicOfInterest().getName()));
     assertThat(findMember.getGrade()).isNotNull();
     assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
-    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.ROLE_BEGINNER);
     assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
     assertThat(findMember.isEmailAuthenticate()).isTrue();
     assertThat(findMember.isWithdrawal()).isFalse();
@@ -196,7 +196,7 @@ class MemberRepositoryTest {
     assertThat(findMember.getTopicOfInterests().size()).isEqualTo(0L);
     assertThat(findMember.getGrade()).isNotNull();
     assertThat(findMember.getGrade().getPoint()).isEqualTo(0L);
-    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.BEGINNER);
+    assertThat(findMember.getGrade().getGradeStaus()).isEqualTo(GradeStaus.ROLE_BEGINNER);
     assertThat(findMember.isTopicOfInterestAlarm()).isTrue();
     assertThat(findMember.isEmailAuthenticate()).isFalse();
     assertThat(findMember.isWithdrawal()).isFalse();
@@ -211,7 +211,7 @@ class MemberRepositoryTest {
       .isWithdrawal(false)
       .participationMissions(new ArrayList<>())
       .topicOfInterests(createMemberOfInterestOfTopic())
-      .grade(createBeginnerGrade())
+      .grade(createROLE_BEGINNERGrade())
       .build();
   }
 
@@ -224,13 +224,13 @@ class MemberRepositoryTest {
       .isWithdrawal(false)
       .participationMissions(new ArrayList<>())
       .topicOfInterests(new ArrayList<>())
-      .grade(createBeginnerGrade())
+      .grade(createROLE_BEGINNERGrade())
       .build();
   }
 
-  private Grade createBeginnerGrade() {
+  private Grade createROLE_BEGINNERGrade() {
     return Grade.builder()
-      .gradeStaus(GradeStaus.BEGINNER)
+      .gradeStaus(GradeStaus.ROLE_BEGINNER)
       .build();
   }
 

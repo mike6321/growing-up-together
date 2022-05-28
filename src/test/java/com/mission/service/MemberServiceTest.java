@@ -79,7 +79,7 @@ class MemberServiceTest {
     assertThat(findMember.getTopicOfInterests()).isNotNull();
     assertThat(findMember.getTopicOfInterests().size()).isEqualTo(0L);
     assertThat(findMember.getGrade()).isNotNull();
-    assertThat(findMember.getGrade()).isEqualTo(GradeStaus.BEGINNER.toString());
+    assertThat(findMember.getGrade()).isEqualTo(GradeStaus.ROLE_BEGINNER.toString());
     assertThat(findMember.getPoint()).isEqualTo(0L);
     assertThat(findMember.isTopicOfInterestAlarm()).isFalse();
     assertThat(findMember.isEmailAuthenticate()).isFalse();
@@ -244,7 +244,7 @@ class MemberServiceTest {
   private Grade createBeginnerGrade() {
     return Grade.builder()
       .id(99L)
-      .gradeStaus(GradeStaus.BEGINNER)
+      .gradeStaus(GradeStaus.ROLE_BEGINNER)
       .build();
   }
 
