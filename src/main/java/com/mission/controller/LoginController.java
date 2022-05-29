@@ -19,25 +19,20 @@ public class LoginController {
     }
 
     @GetMapping("/beginner")
-    @PreAuthorize("hasAnyRole('BEGINNER')")
+    @PreAuthorize("hasRole('BEGINNER')")
     public ResponseEntity<?> beginner() {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/junior")
-    @PreAuthorize("hasAnyRole('JUNIOR')")
+    @PreAuthorize("hasRole('JUNIOR')")
     public ResponseEntity<?> junior() {
         return ResponseEntity.ok(null);
     }
 
     @GetMapping("/senior")
-    @PreAuthorize("hasAnyRole('SENIOR')")
+    @PreAuthorize("hasRole('SENIOR')")
     public ResponseEntity<?> senior() {
-        return ResponseEntity.ok(null);
-    }
-
-    @GetMapping("/etc")
-    public ResponseEntity<?> etc() {
         return ResponseEntity.ok(null);
     }
 

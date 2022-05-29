@@ -24,20 +24,20 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class JwtCustomFilter extends AbstractAuthenticationProcessingFilter {
+public class JwtFilter extends AbstractAuthenticationProcessingFilter {
 
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final String secret;
+    private final long tokenValidityInSeconds;
+    private final Key key;
     private static final AntPathRequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = new AntPathRequestMatcher(
             "/login",
             "POST"
     );
-    private final String secret;
-    private final long tokenValidityInSeconds;
-    private final Key key;
 
-    public JwtCustomFilter(AuthenticationManager authenticationManager,
-                           String secret,
-                           long tokenValidityInSeconds) {
+    public JwtFilter(AuthenticationManager authenticationManager,
+                     String secret,
+                     long tokenValidityInSeconds) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
         this.authenticationManager = authenticationManager;
         this.secret = secret;

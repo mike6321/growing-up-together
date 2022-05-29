@@ -1,7 +1,6 @@
 package com.mission.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    public Authentication getUserPasswordAuthentication(HttpServletRequest request) {
+    private Authentication getUserPasswordAuthentication(HttpServletRequest request) {
         String token = resolveToken(request);
         Key secretKey = resolveSecretKey();
         Claims claims = getClaims(token, secretKey);
@@ -51,28 +50,37 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 
     private List<SimpleGrantedAuthority> getAuthorities(Claims claims) {
-        List<SimpleGrantedAuthority> authorities = Arrays.stream(claims.get(JwtUtils.AUTHORITIES_KEY).toString().split(","))
+        return Arrays.stream(claims.get(JwtUtils.AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        return authorities;
     }
 
     private Claims getClaims(String token, Key secretKey) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = null;
+        try {
+            claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (SecurityException | MalformedJwtException exception) {
+            log.warn("잘못된 JWT 서명입니다.");
+        } catch (ExpiredJwtException exception) {
+            log.warn("만료된 JWT 서명입니다.");
+        } catch (UnsupportedJwtException exception) {
+            log.warn("지원되지 않는 JWT 서명입니다.");
+        } catch (IllegalArgumentException exception) {
+            log.warn("JWT 토큰이 잘못되었습니다.");
+        }
         return claims;
     }
 
     private Key resolveSecretKey() {
         byte[] decode = Decoders.BASE64.decode(secret);
-        Key secretKey = Keys.hmacShaKeyFor(decode);
-        return secretKey;
+        return Keys.hmacShaKeyFor(decode);
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    private String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(JwtUtils.HEADER_STRING);
         return token.replace(JwtUtils.TOKEN_PREFIX, "")
                 .trim();
