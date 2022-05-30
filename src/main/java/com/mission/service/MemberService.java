@@ -11,6 +11,7 @@ import com.mission.repository.MemberOfTopicOfInterestRepository;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final MemberOfTopicOfInterestRepository memberOfTopicOfInterestRepository;
   private final TopicOfInterestRepository topicOfInterestRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @Transactional(readOnly = true)
   public ResFindMember findById(Long memberId) {
@@ -48,7 +50,7 @@ public class MemberService {
 
     List<MemberOfTopicInterest> topicOfInterests = createMemberOfTopics(memberCreateVO.getTopicOfInterests());
 
-    Member createMember = memberRepository.save(Member.createMember(memberCreateVO, topicOfInterests));
+    Member createMember = memberRepository.save(Member.createMember(memberCreateVO, topicOfInterests, passwordEncoder));
 
     return ResModifyMember.of(createMember.getId());
   }

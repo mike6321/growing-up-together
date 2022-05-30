@@ -24,6 +24,8 @@ public class ReqCreateMember {
   @NotNull
   private boolean topicOfInterestAlarm;
   @NotNull
+  private String password;
+  @NotNull
   private List<String> topicOfInterests = new ArrayList<>();
 
 }

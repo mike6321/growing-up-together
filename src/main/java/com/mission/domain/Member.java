@@ -4,9 +4,13 @@ import com.mission.domain.common.BaseTimeEntity;
 import com.mission.dto.member.ReqCreateMember;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity @Getter
@@ -14,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DynamicUpdate @Builder
-public class Member extends BaseTimeEntity {
+public class Member extends BaseTimeEntity implements UserDetails {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -40,15 +44,20 @@ public class Member extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
     private Grade grade;
+    @Column(name = "password")
+    private String password;
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    private List<String> roles = new ArrayList<>();
 
-    public static Member createMember(ReqCreateMember memberCreateVO, List<MemberOfTopicInterest> topicOfInterests) {
-        final Member createMember = Member
-          .builder()
-          .email(memberCreateVO.getEmail())
-          .nickname(memberCreateVO.getNickname())
-          .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
-          .grade(Grade.createBeginnerGrade())
-          .build();
+    public static Member createMember(ReqCreateMember memberCreateVO, List<MemberOfTopicInterest> topicOfInterests, PasswordEncoder passwordEncoder) {
+    final Member createMember =
+        Member.builder()
+            .email(memberCreateVO.getEmail())
+            .nickname(memberCreateVO.getNickname())
+            .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
+            .grade(Grade.createBeginnerGrade())
+            .password(passwordEncoder.encode(memberCreateVO.getPassword()))
+            .build();
         topicOfInterests.forEach(createMember::addTopicOfInterests);
         return createMember;
     }
@@ -94,4 +103,38 @@ public class Member extends BaseTimeEntity {
         this.isWithdrawal = isWithdrawal;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return nickname;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
