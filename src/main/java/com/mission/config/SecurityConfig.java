@@ -1,23 +1,26 @@
 package com.mission.config;
 
 import com.mission.filter.JwtAuthenticationFilter;
-import com.mission.security.JwtAuthenticationProvider;
+import com.mission.filter.JwtAuthorizationFilter;
+import com.mission.service.SecurityUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-  private final JwtAuthenticationProvider provider;
+
+  private final SecurityUserDetailService userDetailService;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -27,12 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .formLogin().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       .and()
-        .authorizeRequests()
-        .antMatchers(HttpMethod.POST, "/api/member").permitAll()
-        .antMatchers("/api/auth/**").permitAll()
-        .anyRequest().authenticated()
-      .and()
-        .addFilterBefore(new JwtAuthenticationFilter(provider), UsernamePasswordAuthenticationFilter.class);
+        .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+        .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+      .authorizeRequests()
+        .antMatchers(HttpMethod.POST,"/api/auth/**").permitAll()
+        .anyRequest().authenticated();
   }
 
   @Bean
@@ -41,9 +43,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  @Override
   public AuthenticationManager authenticationManagerBean() throws Exception {
     return super.authenticationManagerBean();
+  }
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) {
+    auth.authenticationProvider(authenticationProvider());
+  }
+
+  @Bean
+  DaoAuthenticationProvider authenticationProvider(){
+    DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+    daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+    daoAuthenticationProvider.setUserDetailsService(this.userDetailService);
+    return daoAuthenticationProvider;
   }
 
 }

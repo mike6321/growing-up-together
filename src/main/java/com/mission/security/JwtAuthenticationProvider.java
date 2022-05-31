@@ -25,7 +25,6 @@ public class JwtAuthenticationProvider {
   private final UserDetailsService userDetailsService;
 
   public String createJwtToken(String userEmail) {
-
     return Jwts.builder()
       .setSubject(userEmail)
       .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
@@ -43,7 +42,7 @@ public class JwtAuthenticationProvider {
   }
 
   public String getJwtTokenFromRequestHeader(HttpServletRequest servletRequest) {
-    return servletRequest.getHeader("Access-Token");
+    return servletRequest.getHeader("Authorization");
   }
 
   public Authentication getAuthentication(String token) {

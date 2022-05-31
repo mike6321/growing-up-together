@@ -52,6 +52,7 @@ public class MemberService {
 
     Member createMember = memberRepository.save(Member.createMember(memberCreateVO, topicOfInterests, passwordEncoder));
 
+
     return ResModifyMember.of(createMember.getId());
   }
 
