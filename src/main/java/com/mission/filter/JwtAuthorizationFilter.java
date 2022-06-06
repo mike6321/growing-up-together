@@ -3,7 +3,6 @@ package com.mission.filter;
 import com.mission.security.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -50,35 +49,35 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
   }
 
   private Authentication getAuthentication(String token) {
-    final Jws<Claims> claims = getClaims(token);
+    final Claims claims = getClaims(token);
 
     final List<SimpleGrantedAuthority> authorities = getAuthorization(claims);
     final String userEmail = getSubjectByToken(claims);
     return new UsernamePasswordAuthenticationToken(userEmail, "", authorities);
   }
 
-  private Jws<Claims> getClaims(String token) {
-    Jws<Claims> claims = null;
+  private Claims getClaims(String token) {
+    Claims claims = null;
     try{
       claims = Jwts.parser()
         .setSigningKey(JwtProperties.SECRET_KEY.toString())
-        .parseClaimsJws(token.replace(JwtProperties.TOKEN_PREFIX.toString(), ""));
+        .parseClaimsJws(token.replace(JwtProperties.TOKEN_PREFIX.toString(), ""))
+        .getBody();
     } catch (ExpiredJwtException e) {
       log.error("토큰 만료만료 :: {}", e.getMessage());
     }
     return claims;
   }
 
-  private List<SimpleGrantedAuthority> getAuthorization(Jws<Claims> claimsJws) {
-    final String authorizationText = (String) claimsJws.getBody().get(JwtProperties.AUTHORIZATION_KEY.toString());
+  private List<SimpleGrantedAuthority> getAuthorization(Claims claims) {
+    final String authorizationText = (String) claims.get(JwtProperties.AUTHORIZATION_KEY.toString());
     return Stream.of(authorizationText.split(","))
       .map(SimpleGrantedAuthority::new)
       .collect(Collectors.toList());
   }
 
-  private String getSubjectByToken(Jws<Claims> claimsJws) {
-    return claimsJws
-      .getBody()
+  private String getSubjectByToken(Claims claims) {
+    return claims
       .getSubject()
       ;
   }
