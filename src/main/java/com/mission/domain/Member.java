@@ -1,8 +1,10 @@
 package com.mission.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mission.vo.MemberCreateVO;
+import com.mission.domain.common.BaseTimeEntity;
+import com.mission.dto.member.ReqCreateMember;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,8 +14,8 @@ import java.util.List;
 @Table(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-public class Member {
+@DynamicUpdate @Builder
+public class Member extends BaseTimeEntity {
 
     @Id @GeneratedValue
     @Column(name = "member_id")
@@ -30,24 +32,31 @@ public class Member {
     private String email;
     @OneToMany(mappedBy = "member")
     @Builder.Default
-    private List<ParticipationMission> participationMissions = new ArrayList();
+    private List<ParticipationMission> participationMissions = new ArrayList<>();
     @Column(name = "is_withdrawal")
     private boolean isWithdrawal;
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @Builder.Default
-    private List<MemberOfTopicInterest> topicOfInterests = new ArrayList();
+    private List<MemberOfTopicInterest> topicOfInterests = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
-    @JsonIgnore
     private Grade grade;
+    @Column(name = "password")
+    private String password;
+//    @ElementCollection(fetch = FetchType.EAGER)
+//    private List<String> roles = new ArrayList<>();
 
-    public static Member createMember(MemberCreateVO memberCreateVO, Grade memberGrade) {
-        return Member.builder()
-          .email(memberCreateVO.getEmail())
-          .nickname(memberCreateVO.getNickname())
-          .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
-          .grade(memberGrade)
-          .build();
+    public static Member createMember(ReqCreateMember memberCreateVO, List<MemberOfTopicInterest> topicOfInterests, PasswordEncoder passwordEncoder) {
+    final Member createMember =
+        Member.builder()
+            .email(memberCreateVO.getEmail())
+            .nickname(memberCreateVO.getNickname())
+            .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
+            .grade(Grade.createBeginnerGrade())
+            .password(passwordEncoder.encode(memberCreateVO.getPassword()))
+            .build();
+        topicOfInterests.forEach(createMember::addTopicOfInterests);
+        return createMember;
     }
 
     public void addParticipationMission(ParticipationMission participationMission) {
@@ -58,6 +67,12 @@ public class Member {
     public void addTopicOfInterests(MemberOfTopicInterest memberOfTopicInterest) {
         topicOfInterests.add(memberOfTopicInterest);
         memberOfTopicInterest.setMember(this);
+    }
+
+    public void deleteTopicOfInterests() {
+        topicOfInterests.forEach(memberOfTopicInterest -> memberOfTopicInterest.setMember(null));
+        topicOfInterests = new ArrayList<>();
+
     }
 
     /* Setter */

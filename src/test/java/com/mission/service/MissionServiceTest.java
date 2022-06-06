@@ -1,163 +1,80 @@
 package com.mission.service;
 
+import com.mission.domain.Holiday;
 import com.mission.domain.Mission;
-import com.mission.domain.MissionOfTopicInterest;
-import com.mission.dto.mission.RequestCreateMission;
-import com.mission.dto.mission.RequestUpdateMission;
+import com.mission.dto.mission.ReqCreateMission;
+import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.repository.MissionRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.Optional;
+import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class MissionServiceTest {
 
-    @Autowired private MissionService missionService;
-    @Autowired private MissionRepository missionRepository;
-    private RequestCreateMission requestCreateMission;
+    @InjectMocks MissionService missionService;
+    @Mock MissionRepository missionRepository;
+    @Mock TopicOfInterestService topicOfInterestService;
 
-    @BeforeEach
-    void initRequestData() {
-        requestCreateMission = MissionTestData.createMissionData();
-    }
-
-    @DisplayName("미션생성 테스트")
-    @Transactional
-    @Test
-    public void create_mission_test() throws Exception {
-        // when
-        Long missionId = saveMission();
-        Mission mission = missionRepository.findById(missionId)
-                                           .orElseThrow(EntityNotFoundException::new);
-        // then
-        assertThat(missionId).isNotNull();
-        assertThat(mission.getSubject()).isEqualTo(requestCreateMission.getSubject());
-        assertThat(mission.getHoliday()).isEqualTo(requestCreateMission.getHoliday());
-        assertThat(mission.getNumberOfParticipants()).isEqualTo(requestCreateMission.getNumberOfParticipants());
-        assertThat(mission.getCreator()).isEqualTo(requestCreateMission.getCreator());
-        assertThat(mission.getStartDate()).isEqualTo(requestCreateMission.getStartDate());
-        assertThat(mission.getEndDate()).isEqualTo(requestCreateMission.getEndDate());
-        IntStream.range(0, mission.getMissionOfTopicInterests().size())
-                 .forEach(i -> assertThat(mission.getMissionOfTopicInterests().get(i).getTopicOfInterest().getName()).isEqualTo(requestCreateMission.getMissionOfTopicInterests().get(i)));
-    }
-
-    @DisplayName("미션 수정 테스트 - subject")
-    @Transactional
-    @Test
-    public void update_mission_subject() throws Exception {
+    @DisplayName("미션 저장 테스트")
+    @ParameterizedTest
+    @CsvSource(textBlock = "subject, false true true true true true true, 3, junwoo, 2022/05/13, 2022/05/20, spring kafka")
+    void save_mission_test(@AggregateWith(ReqCreateMissionAggregator.class)
+                                   ReqCreateMission reqCreateMission) {
         // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateSubjectData = MissionTestData.updateSubjectData(missionId);
+        given(missionRepository.save(any(Mission.class))).willReturn(
+                Mission.builder()
+                        .id(1L)
+                        .build()
+        );
         // when
-        missionService.updateMissionInformation(updateSubjectData);
+        missionService.saveMission(reqCreateMission);
         // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        assertThat(mission.getSubject()).isEqualTo(updateSubjectData.getSubject());
     }
 
-    @DisplayName("미션 수정 테스트 - holiday")
-    @Transactional
-    @Test
-    public void update_mission_holiday() throws Exception {
+    @DisplayName("미션 업데이트 테스트")
+    @ParameterizedTest
+    @MethodSource("requestMissionUpdateProvider")
+//    @CsvSource(textBlock = "1, subject, false true true true true true true, 3, junwoo, 2022/05/13, 2022/05/20")
+    void update_mission_information_test(ReqUpdateMission reqUpdateMission) {
         // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateHolidayData = MissionTestData.updateHolidayData(missionId);
+        given(missionRepository.findById(reqUpdateMission.getMissionId())).willReturn(Optional.of(Mission.of(reqUpdateMission)));
+        given(missionRepository.save(any(Mission.class))).willReturn(Mission.of(reqUpdateMission));
         // when
-        missionService.updateMissionInformation(updateHolidayData);
+        Long missionId = missionService.updateMissionInformation(reqUpdateMission);
         // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        assertThat(mission.getHoliday().isMonday()).isFalse();
+        then(missionId).equals(reqUpdateMission.getMissionId());
     }
 
-    @DisplayName("미션 수정 테스트 - numberOfParticipants")
-    @Transactional
-    @Test
-    public void update_mission_numberOfParticipants() throws Exception {
-        // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateNumberOfParticipantsData = MissionTestData.updateNumberOfParticipantsData(missionId);
-        // when
-        missionService.updateMissionInformation(updateNumberOfParticipantsData);
-        // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        assertThat(mission.getNumberOfParticipants()).isEqualTo(updateNumberOfParticipantsData.getNumberOfParticipants());
-    }
-
-    @DisplayName("미션 수정 테스트 - creator")
-    @Transactional
-    @Test
-    public void update_mission_creator() throws Exception {
-        // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateCreatorData = MissionTestData.updateCreatorData(missionId);
-        // when
-        missionService.updateMissionInformation(updateCreatorData);
-        // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        assertThat(mission.getCreator()).isEqualTo(updateCreatorData.getCreator());
-    }
-
-    @DisplayName("미션 수정 테스트 - startDate")
-    @Transactional
-    @Test
-    public void update_mission_startDate() throws Exception {
-        // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateStartDateData = MissionTestData.updateStartDateData(missionId);
-        // when
-        missionService.updateMissionInformation(updateStartDateData);
-        // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        assertThat(mission.getStartDate()).isEqualTo(updateStartDateData.getStartDate());
-    }
-
-    @DisplayName("미션 수정 테스트 - endDate")
-    @Transactional
-    @Test
-    public void update_mission_endDate() throws Exception {
-        // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateEndDateData = MissionTestData.updateEndDateData(missionId);
-        // when
-        missionService.updateMissionInformation(updateEndDateData);
-        // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        assertThat(mission.getCreator()).isEqualTo(updateEndDateData.getCreator());
-    }
-
-    @DisplayName("미션 수정 테스트 - missionOfTopicInterests")
-    @Transactional
-    @Test
-    public void update_mission_missionOfTopicInterests() throws Exception {
-        // given
-        Long missionId = saveMission();
-        RequestUpdateMission updateMissionOfTopicInterestsData = MissionTestData.updateMissionOfTopicInterestsData(missionId);
-        // when
-        missionService.updateMissionInformation(updateMissionOfTopicInterestsData);
-        // then
-        Mission mission = missionRepository.findById(missionId)
-                .orElseThrow(EntityNotFoundException::new);
-        List<MissionOfTopicInterest> missionOfTopicInterests = mission.getMissionOfTopicInterests();
-        assertThat(missionOfTopicInterests.size()).isEqualTo(3);
-    }
-
-    private Long saveMission() {
-        return missionService.saveMission(requestCreateMission);
+    static Stream<Arguments> requestMissionUpdateProvider() {
+        List<String> missionOfTopicInterests = List.of("spring", "kafka", "vue.js");
+        return Stream.of(Arguments.of(
+                ReqUpdateMission
+                        .builder()
+                        .missionId(1L)
+                        .subject("subject1")
+                        .holiday(new Holiday(false, true, true, true, true, true, true))
+                        .numberOfParticipants(1)
+                        .creator("sanghoon")
+                        .startDate(Utils.parseDate("2022/05/14"))
+                        .endDate(Utils.parseDate("2022/05/21"))
+                        .missionOfTopicInterests(missionOfTopicInterests)
+                        .build()
+        ));
     }
 
 }

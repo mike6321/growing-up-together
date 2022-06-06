@@ -2,7 +2,7 @@ package com.mission.service;
 
 import com.mission.domain.MissionOfTopicInterest;
 import com.mission.domain.TopicOfInterest;
-import com.mission.dto.mission.RequestCreateMission;
+import com.mission.dto.mission.ReqCreateMission;
 import com.mission.repository.MissionOfTopicInterestRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,21 +14,19 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class TopicOfInterestService {
 
     private final TopicOfInterestRepository topicOfInterestRepository;
     private final MissionOfTopicInterestRepository missionOfTopicInterestRepository;
 
-    public List<MissionOfTopicInterest> getMissionOfTopicInterests(RequestCreateMission requestCreateMission) {
-        List<TopicOfInterest> topicOfInterests = createMissionOfTopicInterests(requestCreateMission.getMissionOfTopicInterests());
-        List<MissionOfTopicInterest> missionOfTopicInterests = topicOfInterests.stream()
-                .map(MissionOfTopicInterest::new)
-                .collect(Collectors.toList());
+    public List<MissionOfTopicInterest> getMissionOfTopicInterests(ReqCreateMission reqCreateMission) {
+        List<TopicOfInterest> topicOfInterests = createMissionOfTopicInterests(reqCreateMission.getMissionOfTopicInterests());
+        List<MissionOfTopicInterest> missionOfTopicInterests = MissionOfTopicInterest.of(topicOfInterests);
         missionOfTopicInterestRepository.saveAll(missionOfTopicInterests);
         return missionOfTopicInterests;
     }
 
-    @Transactional
     protected List<TopicOfInterest> createMissionOfTopicInterests(List<String> missionOfTopicInterestsNames) {
         List<String> existsTopicOfInterests = topicOfInterestRepository.findByNameIn(missionOfTopicInterestsNames)
                 .stream()

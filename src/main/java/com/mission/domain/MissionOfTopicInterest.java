@@ -1,11 +1,11 @@
 package com.mission.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -33,6 +33,13 @@ public class MissionOfTopicInterest {
 
     public void createMission(Mission mission) {
         this.mission = mission;
+    }
+
+    public static List<MissionOfTopicInterest> of(List<TopicOfInterest> topicOfInterests) {
+        return topicOfInterests
+                .stream()
+                .map(MissionOfTopicInterest::new)
+                .collect(Collectors.toList());
     }
 
 }
