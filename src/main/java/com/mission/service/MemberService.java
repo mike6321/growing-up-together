@@ -11,7 +11,6 @@ import com.mission.repository.MemberOfTopicOfInterestRepository;
 import com.mission.repository.MemberRepository;
 import com.mission.repository.TopicOfInterestRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,8 +75,7 @@ public class MemberService {
     }
 
     private boolean isDuplicateEmail(String email) {
-      boolean present = memberRepository.findByEmail(email).isPresent();
-      return present;
+      return memberRepository.findByEmail(email).isPresent();
     }
 
     private List<MemberOfTopicInterest> createMemberOfTopics(List<String> topicOfInterests) {
