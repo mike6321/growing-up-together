@@ -21,7 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final String secret;
     @Value("${jwt.token-validity-in-seconds}")
     private final long tokenValidityInSeconds;
-    private final SecurityFactory securityFactory;
+    private final SecurityConfigFactory securityConfigFactory;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/member/create").permitAll()
                 .anyRequest()
                 .authenticated()
-                .expressionHandler(securityFactory.expressionHandler());
+                .expressionHandler(securityConfigFactory.expressionHandler());
         http.csrf(
                 csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         );

@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
 @Configuration
-public class SecurityFactory {
+public class SecurityConfigFactory {
 
     @Bean
     public static DefaultRolesPrefixPostProcessor defaultRolesPrefixPostProcessor() {
