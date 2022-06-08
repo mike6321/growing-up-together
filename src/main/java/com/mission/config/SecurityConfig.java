@@ -4,13 +4,13 @@ import com.mission.security.JwtAuthorizationFilter;
 import com.mission.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,28 +24,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final SecurityConfigFactory securityConfigFactory;
 
     @Override
+    public void configure(WebSecurity web) {
+        web.ignoring()
+                .antMatchers(HttpMethod.POST, "/api/member/create");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.formLogin().disable();
         http.authorizeRequests()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/api/member/create").permitAll()
                 .anyRequest()
                 .authenticated()
                 .expressionHandler(securityConfigFactory.expressionHandler());
-        http.csrf(
-                csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        );
-        http.addFilterAfter(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.addFilter(jwtAuthorizationFilter());
-    }
-
-    @Bean
-    public JwtFilter jwtFilter() throws Exception {
-        return new JwtFilter(authenticationManager(), secret, tokenValidityInSeconds);
-    }
-
-    @Bean
-    public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {
-        return new JwtAuthorizationFilter(authenticationManager(), secret);
+        http.csrf().disable();
+        http.addFilterAfter(new JwtFilter(authenticationManager(), secret, tokenValidityInSeconds), UsernamePasswordAuthenticationFilter.class);
+        http.addFilter(new JwtAuthorizationFilter(authenticationManager(), secret));
     }
 
 }
