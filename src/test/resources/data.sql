@@ -1,0 +1,2 @@
+insert into grade (created_date, last_modified_date, grade_status, point, grade_id) values (now() , now(), 'BEGINNER', 0, 100);
+insert into member (created_date, last_modified_date, email, grade_id, is_email_authenticate, is_topic_of_interest_alarm, is_withdrawal, nickname, password, profile_image_url, member_id) values (now(), now(), 'test_account@test.com', 100, false, true, false, 'test_account', '$2a$10$Qc2gGA0h1VqdmpJtWGYARuAg9KxoMoxV8qlboDwwyCQqAArfaseCa', NULL, 99);
