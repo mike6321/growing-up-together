@@ -35,6 +35,11 @@ public class MissionController {
         return null;
     }
 
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        return ResponseEntity.ok(null);
+    }
+
     @PostMapping("/mission")
     public ResponseEntity<Long> createMission(@Valid @RequestBody ReqCreateMission reqCreateMission) {
         return ResponseEntity.ok(missionService.saveMission(reqCreateMission));
