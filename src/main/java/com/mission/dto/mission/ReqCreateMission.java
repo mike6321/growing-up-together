@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -26,6 +27,8 @@ public class ReqCreateMission {
     private Holiday holiday;
     @Min(value = 1)
     private int numberOfParticipants;
+    @NotEmpty
+    private String creator;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     @NotEmpty
