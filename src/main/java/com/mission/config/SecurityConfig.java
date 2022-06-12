@@ -1,7 +1,7 @@
 package com.mission.config;
 
 import com.mission.security.JwtAuthorizationFilter;
-import com.mission.security.JwtFilter;
+import com.mission.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .expressionHandler(securityConfigFactory.expressionHandler());
         http.csrf().disable();
-        http.addFilterAfter(new JwtFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JwtAuthenticationFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
         http.addFilterAfter(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
