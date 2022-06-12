@@ -3,7 +3,6 @@ package com.mission.config;
 import com.mission.security.JwtAuthorizationFilter;
 import com.mission.security.JwtFilter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -16,11 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    @Value("${jwt.secret}")
-    private final String secret;
-    @Value("${jwt.token-validity-in-seconds}")
-    private final long tokenValidityInSeconds;
     private final SecurityConfigFactory securityConfigFactory;
 
     @Override
@@ -37,8 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .expressionHandler(securityConfigFactory.expressionHandler());
         http.csrf().disable();
-        http.addFilterAfter(new JwtFilter(authenticationManager(), secret, tokenValidityInSeconds), UsernamePasswordAuthenticationFilter.class);
-        http.addFilter(new JwtAuthorizationFilter(authenticationManager(), secret));
+        http.addFilterAfter(new JwtFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(new JwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
 }
