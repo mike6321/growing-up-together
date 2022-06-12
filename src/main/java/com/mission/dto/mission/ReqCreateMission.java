@@ -26,8 +26,6 @@ public class ReqCreateMission {
     private Holiday holiday;
     @Min(value = 1)
     private int numberOfParticipants;
-    @NotEmpty
-    private String creator;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     @NotEmpty

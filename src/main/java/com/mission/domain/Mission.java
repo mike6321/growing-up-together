@@ -2,6 +2,7 @@ package com.mission.domain;
 
 import com.mission.dto.mission.ReqCreateMission;
 import com.mission.dto.mission.ReqUpdateMission;
+import com.mission.security.SecurityUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +46,7 @@ public class Mission {
         this.subject = reqCreateMission.getSubject();
         this.holiday = reqCreateMission.getHoliday();
         this.numberOfParticipants = reqCreateMission.getNumberOfParticipants();
-        this.creator = reqCreateMission.getCreator();
+        this.creator = SecurityUtils.getUsername();
         this.startDate = reqCreateMission.getStartDate();
         this.endDate = reqCreateMission.getEndDate();
         missionOfTopicInterests
@@ -65,7 +66,7 @@ public class Mission {
                 .subject(reqUpdateMission.getSubject())
                 .holiday(reqUpdateMission.getHoliday())
                 .numberOfParticipants(reqUpdateMission.getNumberOfParticipants())
-                .creator(reqUpdateMission.getCreator())
+                .creator(SecurityUtils.getUsername())
                 .startDate(reqUpdateMission.getStartDate())
                 .endDate(reqUpdateMission.getEndDate())
                 .build();
