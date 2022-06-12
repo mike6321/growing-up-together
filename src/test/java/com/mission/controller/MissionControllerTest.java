@@ -42,7 +42,7 @@ class MissionControllerTest {
     @DisplayName("미션 생성 컨트롤러 테스트")
     @ParameterizedTest
     @MethodSource("requestMissionCreateProvider")
-    @WithAccount(email = "test_account@test.com", nickname = "test_account")
+    @WithAccount(email = "test_account1@test.com", nickname = "test_account1")
     void create_mission_test(ReqCreateMission reqCreateMission) throws Exception {
         given(missionService.saveMission(any())).willReturn(1L);
         String content = new ObjectMapper()
@@ -59,7 +59,7 @@ class MissionControllerTest {
     @DisplayName("미션 수정 컨트롤러 테스트")
     @ParameterizedTest
     @MethodSource("requestMissionUpdateProvider")
-    @WithAccount(email = "test_account@test.com", nickname = "test_account")
+    @WithAccount(email = "test_account2@test.com", nickname = "test_account2")
     void update_mission_test(ReqUpdateMission reqUpdateMission) throws Exception {
         given(missionService.updateMissionInformation(any())).willReturn(1L);
         String content = new ObjectMapper()
