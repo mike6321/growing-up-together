@@ -1,14 +1,15 @@
 package com.mission.domain;
 
+import com.provider.mission.MissionProvider;
+import com.provider.mission.MixProvider;
+import com.provider.mission.TopicOfInterestProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -17,8 +18,8 @@ class MissionOfTopicInterestTest {
 
     @DisplayName("MissionOfTopicInterest - getter")
     @ParameterizedTest
-    @MethodSource("missionOfTopicInterestTestProvider")
-    void gettetTest(Long inputId,
+    @MethodSource(MixProvider.PROVIDER_CLASSPATH + "getterMissionOfTopicInterestProvider")
+    void getterTest(Long inputId,
                     TopicOfInterest inputTopicOfInterest,
                     Mission inputMission,
                     MissionOfTopicInterest missionOfTopicInterest) {
@@ -29,7 +30,7 @@ class MissionOfTopicInterestTest {
 
     @DisplayName("미션 생성 테스트")
     @ParameterizedTest
-    @MethodSource("missionProvider")
+    @MethodSource(MissionProvider.PROVIDER_CLASSPATH + "missionProvider")
     void create_mission_test(Mission mission) {
         MissionOfTopicInterest missionOfTopicInterest = new MissionOfTopicInterest();
         missionOfTopicInterest.createMission(mission);
@@ -38,39 +39,12 @@ class MissionOfTopicInterestTest {
 
     @DisplayName("타입 변환 테스트 (List<TopicOfInterest> -> List<MissionOfTopicInterest>)")
     @ParameterizedTest
-    @MethodSource("topicOfInterestProvider")
+    @MethodSource(TopicOfInterestProvider.PROVIDER_CLASSPATH + "topicOfInterestListProvider")
     void mission_of_test(List<TopicOfInterest> topicOfInterests) {
         List<MissionOfTopicInterest> missionOfTopicInterests = MissionOfTopicInterest.of(topicOfInterests);
         IntStream.range(0, topicOfInterests.size())
                 .forEach(index -> assertThat(missionOfTopicInterests.get(index).getTopicOfInterest())
                         .isEqualTo(topicOfInterests.get(index)));
-    }
-
-    static Stream<Arguments> missionOfTopicInterestTestProvider() {
-        Long missionOfTopicInterestId = 1L;
-        TopicOfInterest topicOfInterest = new TopicOfInterest();
-        Mission mission = new Mission();
-        return Stream.of(Arguments.arguments(
-                        missionOfTopicInterestId, topicOfInterest, mission,
-                        MissionOfTopicInterest.builder()
-                                .id(missionOfTopicInterestId)
-                                .topicOfInterest(topicOfInterest)
-                                .mission(mission)
-                                .build()
-                )
-        );
-    }
-
-    static Stream<Arguments> topicOfInterestProvider() {
-        TopicOfInterest topicOfInterest1 = new TopicOfInterest();
-        TopicOfInterest topicOfInterest2 = new TopicOfInterest();
-        List<TopicOfInterest> topicOfInterests = List.of(topicOfInterest1, topicOfInterest2);
-        return Stream.of(Arguments.arguments(topicOfInterests));
-    }
-
-    static Stream<Arguments> missionProvider() {
-        Mission mission = new Mission();
-        return Stream.of(Arguments.arguments(mission));
     }
 
 }

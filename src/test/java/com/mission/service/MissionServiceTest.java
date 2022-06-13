@@ -1,6 +1,5 @@
 package com.mission.service;
 
-import com.mission.domain.Holiday;
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
 import com.mission.domain.TopicOfInterest;
@@ -8,10 +7,11 @@ import com.mission.dto.mission.ReqCreateMission;
 import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.dto.mission.ResFindMission;
 import com.mission.repository.MissionRepository;
+import com.provider.mission.MissionProvider;
+import com.provider.mission.ReqUpdateMissionProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,11 +34,10 @@ class MissionServiceTest {
     @InjectMocks MissionService missionService;
     @Mock MissionRepository missionRepository;
     @Mock TopicOfInterestService topicOfInterestService;
-    private static final String PROVIDER_CLASSPATH = "com.provider.MissionProvider#";
 
     @DisplayName("미션 전체 조회 테스트")
     @ParameterizedTest
-    @MethodSource(PROVIDER_CLASSPATH + "missionProvider")
+    @MethodSource(MissionProvider.PROVIDER_CLASSPATH + "missionProvider")
     void get_missions_test(Mission reqMission) {
         // given
         List<Mission> reqMissions = List.of(reqMission);
@@ -66,21 +64,21 @@ class MissionServiceTest {
 
     @DisplayName("미션 조회 테스트")
     @ParameterizedTest
-    @MethodSource(PROVIDER_CLASSPATH + "missionProvider")
-    void get_mission_test(Mission reqMission) {
+    @MethodSource(MissionProvider.PROVIDER_CLASSPATH + "missionProvider")
+    void get_mission_test(Mission mission) {
         // given
-        given(missionRepository.findById(anyLong())).willReturn(Optional.of(reqMission));
+        given(missionRepository.findById(anyLong())).willReturn(Optional.of(mission));
         // when
         ResFindMission resFindMission = missionService.getMission(1L);
         // then
-        assertThat(resFindMission.getMissionId()).isEqualTo(reqMission.getId());
-        assertThat(resFindMission.getSubject()).isEqualTo(reqMission.getSubject());
-        assertThat(resFindMission.getHoliday()).isEqualTo(reqMission.getHoliday());
-        assertThat(resFindMission.getNumberOfParticipants()).isEqualTo(reqMission.getNumberOfParticipants());
-        assertThat(resFindMission.getCreator()).isEqualTo(reqMission.getCreator());
-        assertThat(resFindMission.getStartDate()).isEqualTo(reqMission.getStartDate());
-        assertThat(resFindMission.getEndDate()).isEqualTo(reqMission.getEndDate());
-        List<String> reqTopicOfInterestNames = reqMission.getMissionOfTopicInterests()
+        assertThat(resFindMission.getMissionId()).isEqualTo(mission.getId());
+        assertThat(resFindMission.getSubject()).isEqualTo(mission.getSubject());
+        assertThat(resFindMission.getHoliday()).isEqualTo(mission.getHoliday());
+        assertThat(resFindMission.getNumberOfParticipants()).isEqualTo(mission.getNumberOfParticipants());
+        assertThat(resFindMission.getCreator()).isEqualTo(mission.getCreator());
+        assertThat(resFindMission.getStartDate()).isEqualTo(mission.getStartDate());
+        assertThat(resFindMission.getEndDate()).isEqualTo(mission.getEndDate());
+        List<String> reqTopicOfInterestNames = mission.getMissionOfTopicInterests()
                 .stream()
                 .map(MissionOfTopicInterest::getTopicOfInterest)
                 .map(TopicOfInterest::getName)
@@ -106,7 +104,7 @@ class MissionServiceTest {
 
     @DisplayName("미션 업데이트 테스트")
     @ParameterizedTest
-    @MethodSource("requestMissionUpdateProvider")
+    @MethodSource(ReqUpdateMissionProvider.PROVIDER_CLASSPATH + "reqUpdateMissionProvider")
     void update_mission_information_test(ReqUpdateMission reqUpdateMission) {
         // given
         given(missionRepository.findById(reqUpdateMission.getMissionId())).willReturn(Optional.of(Mission.of(reqUpdateMission)));
@@ -115,23 +113,6 @@ class MissionServiceTest {
         Long missionId = missionService.updateMissionInformation(reqUpdateMission);
         // then
         then(missionId).equals(reqUpdateMission.getMissionId());
-    }
-
-    static Stream<Arguments> requestMissionUpdateProvider() {
-        List<String> missionOfTopicInterests = List.of("spring", "kafka", "vue.js");
-        return Stream.of(Arguments.of(
-                ReqUpdateMission
-                        .builder()
-                        .missionId(1L)
-                        .subject("subject1")
-                        .holiday(new Holiday(false, true, true, true, true, true, true))
-                        .numberOfParticipants(1)
-                        .creator("sanghoon")
-                        .startDate(Utils.parseDate("2022/05/14"))
-                        .endDate(Utils.parseDate("2022/05/21"))
-                        .missionOfTopicInterests(missionOfTopicInterests)
-                        .build()
-        ));
     }
 
 }

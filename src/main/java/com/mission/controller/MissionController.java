@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/mission")
 @RequiredArgsConstructor
 public class MissionController {
 
@@ -25,24 +26,24 @@ public class MissionController {
         webDataBinder.addValidators(createMissionValidator);
     }
 
-    @GetMapping("/mission")
+    @GetMapping
     public ResponseEntity<List<ResFindMission>> findMissions() {
         List<ResFindMission> missions = missionService.getMissions();
         return ResponseEntity.ok(missions);
     }
 
-    @GetMapping("/mission/{id}")
-    public ResponseEntity<ResFindMission> findMission(@PathVariable(name = "id") Long missionId) {
+    @GetMapping("{missionId}")
+    public ResponseEntity<ResFindMission> findMission(@PathVariable(name = "missionId") Long missionId) {
         ResFindMission mission = missionService.getMission(missionId);
         return ResponseEntity.ok(mission);
     }
 
-    @PostMapping("/mission")
+    @PostMapping
     public ResponseEntity<Long> createMission(@Valid @RequestBody ReqCreateMission reqCreateMission) {
         return ResponseEntity.ok(missionService.saveMission(reqCreateMission));
     }
 
-    @PutMapping("/mission")
+    @PutMapping
     public ResponseEntity<Long> updateMission(@Valid @RequestBody ReqUpdateMission requestUpdateMission) {
         return ResponseEntity.ok(missionService.updateMissionInformation(requestUpdateMission));
     }
