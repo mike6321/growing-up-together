@@ -32,7 +32,7 @@ public class MissionController {
         return ResponseEntity.ok(missions);
     }
 
-    @GetMapping("{missionId}")
+    @GetMapping("/{missionId}")
     public ResponseEntity<ResFindMission> findMission(@PathVariable(name = "missionId") Long missionId) {
         ResFindMission mission = missionService.getMission(missionId);
         return ResponseEntity.ok(mission);

@@ -1,6 +1,7 @@
 package com.provider.mission;
 
 import com.mission.domain.TopicOfInterest;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.List;
@@ -15,7 +16,10 @@ public class TopicOfInterestProvider {
         TopicOfInterest topicOfInterest1 = new TopicOfInterest();
         TopicOfInterest topicOfInterest2 = new TopicOfInterest();
         List<TopicOfInterest> topicOfInterests = List.of(topicOfInterest1, topicOfInterest2);
-        return Stream.of(Arguments.arguments(topicOfInterests));
+        return Stream.of(Arguments.arguments(
+                Named.of("List<TopicOfInterest>", topicOfInterests)
+                )
+        );
     }
 
 }

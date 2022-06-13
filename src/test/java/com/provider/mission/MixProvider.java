@@ -2,6 +2,7 @@ package com.provider.mission;
 
 import com.mission.domain.*;
 import com.mission.dto.mission.ReqCreateMission;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class MixProvider {
         List<TopicOfInterest> topicOfInterests = TopicOfInterest.nonExistsTopic(topicOfInterestNames, List.of("vue.js"));
         List<MissionOfTopicInterest> missionOfTopicInterests = MissionOfTopicInterest.of(topicOfInterests);
         return Stream.of(Arguments.arguments(
-                ReqCreateMission.builder()
+                Named.of("ReqCreateMission", ReqCreateMission.builder()
                         .subject(subject)
                         .holiday(holiday)
                         .numberOfParticipants(numberOfParticipants)
@@ -32,8 +33,11 @@ public class MixProvider {
                         .startDate(startDate)
                         .endDate(endDate)
                         .missionOfTopicInterests(topicOfInterestNames)
-                        .build(),
-                missionOfTopicInterests));
+                        .build()
+                ),
+                Named.of("List<MissionOfTopicInterest>", missionOfTopicInterests)
+                )
+        );
     }
 
     static Stream<Arguments> getterMissionOfTopicInterestProvider() {
@@ -41,12 +45,15 @@ public class MixProvider {
         TopicOfInterest topicOfInterest = new TopicOfInterest();
         Mission mission = new Mission();
         return Stream.of(Arguments.arguments(
-                        missionOfTopicInterestId, topicOfInterest, mission,
-                        MissionOfTopicInterest.builder()
+                        Named.of("MissionOfTopicInterestId", missionOfTopicInterestId),
+                        Named.of("TopicOfInterest", topicOfInterest),
+                        Named.of("Mission", mission),
+                        Named.of("MissionOfTopicInterest", MissionOfTopicInterest.builder()
                                 .id(missionOfTopicInterestId)
                                 .topicOfInterest(topicOfInterest)
                                 .mission(mission)
                                 .build()
+                        )
                 )
         );
     }
@@ -64,8 +71,15 @@ public class MixProvider {
         LocalDateTime endDate = startDate.plusDays(7);
         List<MissionOfTopicInterest> missionOfTopicInterests = List.of(missionOfTopicInterest);
         return Stream.of(Arguments.arguments(
-                        missionId, subject, holiday, numberOfParticipants, creator, startDate, endDate, missionOfTopicInterests,
-                        Mission.builder()
+                        Named.of("MissionId", missionId),
+                        Named.of("Subject", subject),
+                        Named.of("Holiday", holiday),
+                        Named.of("NumberOfParticipants", numberOfParticipants),
+                        Named.of("Creator", creator),
+                        Named.of("StartDate", startDate),
+                        Named.of("EndDate", endDate),
+                        Named.of("MissionOfTopicInterests", missionOfTopicInterests),
+                        Named.of("Mission", Mission.builder()
                                 .id(missionId)
                                 .subject(subject)
                                 .holiday(holiday)
@@ -75,6 +89,7 @@ public class MixProvider {
                                 .endDate(endDate)
                                 .missionOfTopicInterests(missionOfTopicInterests)
                                 .build()
+                        )
                 )
         );
     }
@@ -87,12 +102,15 @@ public class MixProvider {
                 .build();
         List<MemberOfTopicInterest> memberOfTopicInterests = List.of(memberOfTopicInterest);
         return Stream.of(Arguments.arguments(
-                        topicOfInterestId, name, memberOfTopicInterests,
-                        TopicOfInterest.builder()
+                        Named.of("topicOfInterestId", topicOfInterestId),
+                        Named.of("Name", name),
+                        Named.of("MemberOfTopicInterests", memberOfTopicInterests),
+                        Named.of("TopicOfInterest", TopicOfInterest.builder()
                                 .topicOfInterestId(topicOfInterestId)
                                 .name(name)
                                 .memberOfTopicInterests(memberOfTopicInterests)
                                 .build()
+                        )
                 )
         );
     }

@@ -21,7 +21,7 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()).withNano(1);
     }
 
     public static Holiday getHoliday(ArgumentsAccessor accessor, int index) {

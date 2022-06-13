@@ -5,6 +5,7 @@ import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
 import com.mission.domain.TopicOfInterest;
 import com.mission.service.Utils;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class MissionProvider {
                 .build();
         List<MissionOfTopicInterest> missionOfTopicInterests = List.of(missionOfTopicInterest);
         return Stream.of(Arguments.of(
-                Mission
+                Named.of("Mission", Mission
                         .builder()
                         .id(1L)
                         .subject("주제1")
@@ -32,6 +33,7 @@ public class MissionProvider {
                         .endDate(Utils.parseDate("2022/05/21"))
                         .missionOfTopicInterests(missionOfTopicInterests)
                         .build()
+                )
         ));
     }
 

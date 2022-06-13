@@ -4,7 +4,6 @@ import com.annotation.MockMvcTest;
 import com.mission.domain.Holiday;
 import com.mission.domain.Mission;
 import com.mission.domain.MissionOfTopicInterest;
-import com.mission.domain.TopicOfInterest;
 import com.mission.dto.mission.ReqCreateMission;
 import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.service.MissionService;
@@ -32,7 +31,7 @@ class MissionRepositoryTest {
 
     @DisplayName("미션 업데이트 테스트")
     @Test
-    void update_mission_test() throws Exception {
+    void update_mission_test() {
         // given
         Long missionId = missionFactory.createMission();
         ReqUpdateMission reqUpdateMission = initReqUpdateMission(missionId);

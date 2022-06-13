@@ -1,5 +1,6 @@
 package com.mission.controller;
 
+import com.annotation.MockMvcTest;
 import com.annotation.WithAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -17,24 +18,21 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@MockMvcTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MissionControllerTest {
 
@@ -53,8 +51,23 @@ class MissionControllerTest {
         // given
         given(missionService.getMissions()).willReturn(List.of(resFindMission));
         // then
-        mockMvc.perform(get(PATH))
+        mockMvc.perform(get(PATH)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].missionId").value(resFindMission.getMissionId()))
+                .andExpect(jsonPath("$[0].subject", is(resFindMission.getSubject())))
+                .andExpect(jsonPath("$[0].holiday.monday", is(resFindMission.getHoliday().isMonday())))
+                .andExpect(jsonPath("$[0].holiday.tuesday", is(resFindMission.getHoliday().isTuesday())))
+                .andExpect(jsonPath("$[0].holiday.wednesday", is(resFindMission.getHoliday().isWednesday())))
+                .andExpect(jsonPath("$[0].holiday.thursday", is(resFindMission.getHoliday().isThursday())))
+                .andExpect(jsonPath("$[0].holiday.friday", is(resFindMission.getHoliday().isFriday())))
+                .andExpect(jsonPath("$[0].holiday.saturday", is(resFindMission.getHoliday().isSaturday())))
+                .andExpect(jsonPath("$[0].holiday.sunday", is(resFindMission.getHoliday().isSunday())))
+                .andExpect(jsonPath("$[0].numberOfParticipants", is(resFindMission.getNumberOfParticipants())))
+                .andExpect(jsonPath("$[0].creator", is(resFindMission.getCreator())))
+                .andExpect(jsonPath("$[0].startDate", is(resFindMission.getStartDate().toString())))
+                .andExpect(jsonPath("$[0].endDate", is(resFindMission.getEndDate().toString())))
+                .andExpect(jsonPath("$[0].topicOfInterests", is(resFindMission.getTopicOfInterests())))
                 .andDo(print());
     }
 
@@ -67,9 +80,23 @@ class MissionControllerTest {
         // given
         given(missionService.getMission(anyLong())).willReturn(resFindMission);
         // then
-        mockMvc.perform(get(PATH)
-                        .param("missionId", "1L"))
+        mockMvc.perform(get(PATH + "/{missionId}", resFindMission.getMissionId())
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.missionId").value(resFindMission.getMissionId()))
+                .andExpect(jsonPath("$.subject", is(resFindMission.getSubject())))
+                .andExpect(jsonPath("$.holiday.monday", is(resFindMission.getHoliday().isMonday())))
+                .andExpect(jsonPath("$.holiday.tuesday", is(resFindMission.getHoliday().isTuesday())))
+                .andExpect(jsonPath("$.holiday.wednesday", is(resFindMission.getHoliday().isWednesday())))
+                .andExpect(jsonPath("$.holiday.thursday", is(resFindMission.getHoliday().isThursday())))
+                .andExpect(jsonPath("$.holiday.friday", is(resFindMission.getHoliday().isFriday())))
+                .andExpect(jsonPath("$.holiday.saturday", is(resFindMission.getHoliday().isSaturday())))
+                .andExpect(jsonPath("$.holiday.sunday", is(resFindMission.getHoliday().isSunday())))
+                .andExpect(jsonPath("$.numberOfParticipants", is(resFindMission.getNumberOfParticipants())))
+                .andExpect(jsonPath("$.creator", is(resFindMission.getCreator())))
+                .andExpect(jsonPath("$.startDate", is(resFindMission.getStartDate().toString())))
+                .andExpect(jsonPath("$.endDate", is(resFindMission.getEndDate().toString())))
+                .andExpect(jsonPath("$.topicOfInterests", is(resFindMission.getTopicOfInterests())))
                 .andDo(print());
     }
 

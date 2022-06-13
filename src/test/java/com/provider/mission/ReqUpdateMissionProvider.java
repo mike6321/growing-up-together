@@ -3,6 +3,7 @@ package com.provider.mission;
 import com.mission.domain.Holiday;
 import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.service.Utils;
+import org.junit.jupiter.api.Named;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class ReqUpdateMissionProvider {
     static Stream<Arguments> reqUpdateMissionProvider() {
         List<String> missionOfTopicInterests = List.of("spring", "kafka", "vue.js");
         return Stream.of(Arguments.of(
-                ReqUpdateMission
+                Named.of("ReqUpdateMission", ReqUpdateMission
                         .builder()
                         .missionId(1L)
                         .subject("subject")
@@ -27,6 +28,7 @@ public class ReqUpdateMissionProvider {
                         .endDate(Utils.parseDate("2022/05/21"))
                         .missionOfTopicInterests(missionOfTopicInterests)
                         .build()
+                )
         ));
     }
 
