@@ -22,6 +22,7 @@ public class MissionService {
     private final TopicOfInterestService topicOfInterestService;
     private final MissionRepository missionRepository;
 
+    @Transactional(readOnly = true)
     public List<ResFindMission> getMissions() {
         return missionRepository.findAll()
                 .stream()
@@ -29,6 +30,7 @@ public class MissionService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ResFindMission getMission(Long missionId) {
         return missionRepository.findById(missionId)
                 .stream()
