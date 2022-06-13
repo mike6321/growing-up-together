@@ -1,6 +1,6 @@
 package com.mission.dto.mission;
 
-import lombok.AllArgsConstructor;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -8,9 +8,9 @@ import lombok.experimental.SuperBuilder;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Generated
 public class ReqUpdateMission extends ReqCreateMission {
 
     @NotNull

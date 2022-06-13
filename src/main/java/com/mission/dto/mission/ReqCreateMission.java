@@ -1,12 +1,11 @@
 package com.mission.dto.mission;
 
 import com.mission.domain.Holiday;
-import lombok.AllArgsConstructor;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import net.bytebuddy.implementation.bind.annotation.Empty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -16,9 +15,9 @@ import java.util.List;
 
 @Getter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Generated
 public class ReqCreateMission {
 
     @NotEmpty
