@@ -2,6 +2,8 @@ package com.mission.service;
 
 import com.mission.domain.Holiday;
 import com.mission.domain.Mission;
+import com.mission.domain.MissionOfTopicInterest;
+import com.mission.domain.TopicOfInterest;
 import com.mission.dto.mission.ReqCreateMission;
 import com.mission.dto.mission.ReqUpdateMission;
 import com.mission.dto.mission.ResFindMission;
@@ -18,10 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -36,23 +40,52 @@ class MissionServiceTest {
     @DisplayName("미션 전체 조회 테스트")
     @ParameterizedTest
     @MethodSource(PROVIDER_CLASSPATH + "missionProvider")
-    void get_mission_test(Mission reqMission) {
+    void get_missions_test(Mission reqMission) {
         // given
         List<Mission> reqMissions = List.of(reqMission);
         given(missionRepository.findAll()).willReturn(reqMissions);
         // when
         List<ResFindMission> missions = missionService.getMissions();
-        Mission resultMission = reqMissions.get(0);
+        ResFindMission resFindMission = missions.get(0);
         // then
         assertThat(reqMissions.size()).isEqualTo(missions.size());
-        assertThat(resultMission.getId()).isEqualTo(reqMission.getId());
-        assertThat(resultMission.getSubject()).isEqualTo(reqMission.getSubject());
-        assertThat(resultMission.getHoliday()).isEqualTo(reqMission.getHoliday());
-        assertThat(resultMission.getNumberOfParticipants()).isEqualTo(reqMission.getNumberOfParticipants());
-        assertThat(resultMission.getCreator()).isEqualTo(reqMission.getCreator());
-        assertThat(resultMission.getStartDate()).isEqualTo(reqMission.getStartDate());
-        assertThat(resultMission.getEndDate()).isEqualTo(reqMission.getEndDate());
-        assertThat(resultMission.getMissionOfTopicInterests()).isEqualTo(reqMission.getMissionOfTopicInterests());
+        assertThat(resFindMission.getMissionId()).isEqualTo(reqMission.getId());
+        assertThat(resFindMission.getSubject()).isEqualTo(reqMission.getSubject());
+        assertThat(resFindMission.getHoliday()).isEqualTo(reqMission.getHoliday());
+        assertThat(resFindMission.getNumberOfParticipants()).isEqualTo(reqMission.getNumberOfParticipants());
+        assertThat(resFindMission.getCreator()).isEqualTo(reqMission.getCreator());
+        assertThat(resFindMission.getStartDate()).isEqualTo(reqMission.getStartDate());
+        assertThat(resFindMission.getEndDate()).isEqualTo(reqMission.getEndDate());
+        List<String> reqTopicOfInterestNames = reqMission.getMissionOfTopicInterests()
+                .stream()
+                .map(MissionOfTopicInterest::getTopicOfInterest)
+                .map(TopicOfInterest::getName)
+                .collect(Collectors.toList());
+        assertThat(resFindMission.getTopicOfInterests()).isEqualTo(reqTopicOfInterestNames);
+    }
+
+    @DisplayName("미션 조회 테스트")
+    @ParameterizedTest
+    @MethodSource(PROVIDER_CLASSPATH + "missionProvider")
+    void get_mission_test(Mission reqMission) {
+        // given
+        given(missionRepository.findById(anyLong())).willReturn(Optional.of(reqMission));
+        // when
+        ResFindMission resFindMission = missionService.getMission(1L);
+        // then
+        assertThat(resFindMission.getMissionId()).isEqualTo(reqMission.getId());
+        assertThat(resFindMission.getSubject()).isEqualTo(reqMission.getSubject());
+        assertThat(resFindMission.getHoliday()).isEqualTo(reqMission.getHoliday());
+        assertThat(resFindMission.getNumberOfParticipants()).isEqualTo(reqMission.getNumberOfParticipants());
+        assertThat(resFindMission.getCreator()).isEqualTo(reqMission.getCreator());
+        assertThat(resFindMission.getStartDate()).isEqualTo(reqMission.getStartDate());
+        assertThat(resFindMission.getEndDate()).isEqualTo(reqMission.getEndDate());
+        List<String> reqTopicOfInterestNames = reqMission.getMissionOfTopicInterests()
+                .stream()
+                .map(MissionOfTopicInterest::getTopicOfInterest)
+                .map(TopicOfInterest::getName)
+                .collect(Collectors.toList());
+        assertThat(resFindMission.getTopicOfInterests()).isEqualTo(reqTopicOfInterestNames);
     }
 
     @DisplayName("미션 저장 테스트")

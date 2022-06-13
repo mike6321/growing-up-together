@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -41,8 +42,24 @@ class MissionControllerTest {
     @ParameterizedTest
     @MethodSource(PROVIDER_CLASSPATH + "resFindMissionProvider")
     void find_missions_test(ResFindMission resFindMission) throws Exception {
+        // given
         given(missionService.getMissions()).willReturn(List.of(resFindMission));
+        // then
         mockMvc.perform(get("/mission"))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("미션 조회 컨트롤러 테스트")
+    @WithAccount(email = "test_account3@test.com", nickname = "test_account1")
+    @ParameterizedTest
+    @MethodSource(PROVIDER_CLASSPATH + "resFindMissionProvider")
+    public void find_mission_test(ResFindMission resFindMission) throws Exception {
+        // given
+        given(missionService.getMission(anyLong())).willReturn(resFindMission);
+        // then
+        mockMvc.perform(get("/mission")
+                        .param("id", "1L"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -52,10 +69,12 @@ class MissionControllerTest {
     @MethodSource(PROVIDER_CLASSPATH + "requestMissionCreateProvider")
     @WithAccount(email = "test_account1@test.com", nickname = "test_account1")
     void create_mission_test(ReqCreateMission reqCreateMission) throws Exception {
+        // given
         given(missionService.saveMission(any())).willReturn(1L);
         String content = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .writeValueAsString(reqCreateMission);
+        // then
         mockMvc.perform(post("/mission")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -69,10 +88,12 @@ class MissionControllerTest {
     @MethodSource(PROVIDER_CLASSPATH + "requestMissionUpdateProvider")
     @WithAccount(email = "test_account2@test.com", nickname = "test_account2")
     void update_mission_test(ReqUpdateMission reqUpdateMission) throws Exception {
+        // given
         given(missionService.updateMissionInformation(any())).willReturn(1L);
         String content = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .writeValueAsString(reqUpdateMission);
+        // then
         mockMvc.perform(put("/mission")
                         .content(content)
                         .contentType(MediaType.APPLICATION_JSON))
