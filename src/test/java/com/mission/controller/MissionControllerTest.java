@@ -37,9 +37,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MissionControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @MockBean
-    MissionService missionService;
+    private MissionService missionService;
     private static final String PATH = "/api/mission";
 
     @Order(1)

@@ -21,10 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/create_member.sql")
 class TokenTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired ObjectMapper objectMapper;
     @Autowired
-    CustomUserDetailsService customUserDetailsService;
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @DisplayName("Token 확인 테스트 - 등록된 계정이 없는 경우")
     @Test

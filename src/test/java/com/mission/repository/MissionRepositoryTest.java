@@ -25,9 +25,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @MockMvcTest
 class MissionRepositoryTest {
 
-    @Autowired MissionRepository missionRepository;
-    @Autowired MissionService missionService;
-    @Autowired MissionFactory missionFactory;
+    @Autowired
+    private MissionRepository missionRepository;
+    @Autowired
+    private MissionService missionService;
+    @Autowired
+    private MissionFactory missionFactory;
 
     @DisplayName("미션 업데이트 테스트")
     @Test
