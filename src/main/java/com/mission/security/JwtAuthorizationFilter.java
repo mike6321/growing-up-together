@@ -23,10 +23,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         SecurityContext context = SecurityContextHolder.getContext();
-        if (!context.getAuthentication().isAuthenticated()) {
-            Authentication authentication = getUserPasswordAuthentication(request);
-            context.setAuthentication(authentication);
-            log.info("SecurityContext에 {} 인증 정보를 저장했습니다. URI : {}", authentication.getName(), request.getRequestURI());
+        if (context.getAuthentication() != null) {
+            if (!context.getAuthentication().isAuthenticated()) {
+                Authentication authentication = getUserPasswordAuthentication(request);
+                context.setAuthentication(authentication);
+                log.info("SecurityContext에 {} 인증 정보를 저장했습니다. URI : {}", authentication.getName(), request.getRequestURI());
+            }
         }
         chain.doFilter(request, response);
     }
