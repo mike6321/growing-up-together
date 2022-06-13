@@ -9,35 +9,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class MissionTest {
-
-    @DisplayName("Mission - getter test")
-    @ParameterizedTest
-    @MethodSource(MixProvider.PROVIDER_CLASSPATH + "getterMissionProvider")
-    void getter_test(Long inputId,
-                    String inputSubject,
-                    Holiday inputHoliday,
-                    int inputNumberOfParticipants,
-                    String inputCreator,
-                    LocalDateTime inputStartDate,
-                    LocalDateTime inputEndDate,
-                    List<MissionOfTopicInterest> inputMissionOfTopicInterests,
-                    Mission mission) {
-        assertThat(mission.getId()).isEqualTo(inputId);
-        assertThat(mission.getSubject()).isEqualTo(inputSubject);
-        assertThat(mission.getHoliday()).isEqualTo(inputHoliday);
-        assertThat(mission.getNumberOfParticipants()).isEqualTo(inputNumberOfParticipants);
-        assertThat(mission.getCreator()).isEqualTo(inputCreator);
-        assertThat(mission.getStartDate()).isEqualTo(inputStartDate);
-        assertThat(mission.getEndDate()).isEqualTo(inputEndDate);
-        assertThat(mission.getMissionOfTopicInterests()).isEqualTo(inputMissionOfTopicInterests);
-    }
 
     @DisplayName("미션 생성 테스트")
     @ParameterizedTest

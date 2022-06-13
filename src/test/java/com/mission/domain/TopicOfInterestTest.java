@@ -1,11 +1,8 @@
 package com.mission.domain;
 
-import com.provider.mission.MixProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
@@ -43,18 +40,6 @@ class TopicOfInterestTest {
         List<TopicOfInterest> topicOfInterests = TopicOfInterest.nonExistsTopic(topicNames, existsTopicNames);
         // then
         assertThat(topicOfInterests.size()).isEqualTo(1);
-    }
-
-    @DisplayName("TopicOfInterest - getter test")
-    @ParameterizedTest
-    @MethodSource(MixProvider.PROVIDER_CLASSPATH + "getterTopicOfInterestProvider")
-    void getterTest(Long inputTopicOfInterestId,
-                    String inputName,
-                    List<MemberOfTopicInterest> inputMemberOfTopicInterests,
-                    TopicOfInterest topicOfInterest) {
-        assertThat(topicOfInterest.getTopicOfInterestId()).isEqualTo(inputTopicOfInterestId);
-        assertThat(topicOfInterest.getName()).isEqualTo(inputName);
-        assertThat(topicOfInterest.getMemberOfTopicInterests()).isEqualTo(inputMemberOfTopicInterests);
     }
 
 }

@@ -1,7 +1,6 @@
 package com.mission.domain;
 
 import com.provider.mission.MissionProvider;
-import com.provider.mission.MixProvider;
 import com.provider.mission.TopicOfInterestProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,18 +14,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class MissionOfTopicInterestTest {
-
-    @DisplayName("MissionOfTopicInterest - getter")
-    @ParameterizedTest
-    @MethodSource(MixProvider.PROVIDER_CLASSPATH + "getterMissionOfTopicInterestProvider")
-    void getterTest(Long inputId,
-                    TopicOfInterest inputTopicOfInterest,
-                    Mission inputMission,
-                    MissionOfTopicInterest missionOfTopicInterest) {
-        assertThat(missionOfTopicInterest.getId()).isEqualTo(inputId);
-        assertThat(missionOfTopicInterest.getTopicOfInterest()).isEqualTo(inputTopicOfInterest);
-        assertThat(missionOfTopicInterest.getMission()).isEqualTo(inputMission);
-    }
 
     @DisplayName("미션 생성 테스트")
     @ParameterizedTest
