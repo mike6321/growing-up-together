@@ -40,15 +40,18 @@ public class Member extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "grade_id")
     private Grade grade;
+    @Column(name = "password", length = 100)
+    private String password;
 
     public static Member createMember(ReqCreateMember memberCreateVO, List<MemberOfTopicInterest> topicOfInterests) {
         final Member createMember = Member
-          .builder()
-          .email(memberCreateVO.getEmail())
-          .nickname(memberCreateVO.getNickname())
-          .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
-          .grade(Grade.createBeginnerGrade())
-          .build();
+                .builder()
+                .email(memberCreateVO.getEmail())
+                .nickname(memberCreateVO.getNickname())
+                .isTopicOfInterestAlarm(memberCreateVO.isTopicOfInterestAlarm())
+                .grade(Grade.createBeginnerGrade())
+                .password(memberCreateVO.getPassword())
+                .build();
         topicOfInterests.forEach(createMember::addTopicOfInterests);
         return createMember;
     }

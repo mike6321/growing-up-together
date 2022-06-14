@@ -11,9 +11,12 @@ import com.mission.repository.TopicOfInterestRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.platform.commons.util.ReflectionUtils;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -283,6 +286,12 @@ class MemberServiceTest {
       .topicOfInterestAlarm(true)
       .topicOfInterests(new ArrayList<>())
       .build();
+  }
+
+  @ParameterizedTest
+  void test() {
+    ReflectionTestUtils.setField(memberService, "why", "Price1");
+    memberService.findAll();
   }
 
 }

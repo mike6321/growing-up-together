@@ -16,8 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MissionFactory {
 
-    @Autowired MissionRepository missionRepository;
-    @Autowired MissionService missionService;
+    @Autowired
+    private MissionService missionService;
 
     public Long createMission() {
         List<String> missionOfTopicInterests = List.of("spring", "kafka");

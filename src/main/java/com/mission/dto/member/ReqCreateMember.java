@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,5 +23,11 @@ public class ReqCreateMember {
   private boolean topicOfInterestAlarm;
   @NotNull
   private List<String> topicOfInterests = new ArrayList<>();
+  @Size(min = 3, max = 100)
+  private String password;
+
+  public void encodePassword(String password) {
+    this.password = password;
+  }
 
 }

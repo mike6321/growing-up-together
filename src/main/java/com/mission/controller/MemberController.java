@@ -29,7 +29,7 @@ public class MemberController {
     return ResponseEntity.ok(memberService.findAll());
   }
 
-  @PostMapping
+  @PostMapping("/create")
   public ResponseEntity<ResModifyMember> createMember(@RequestBody @Valid ReqCreateMember memberCreateVO) {
     return ResponseEntity.ok(memberService.createMember(memberCreateVO));
   }

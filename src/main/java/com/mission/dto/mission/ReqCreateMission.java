@@ -1,7 +1,7 @@
 package com.mission.dto.mission;
 
 import com.mission.domain.Holiday;
-import lombok.AllArgsConstructor;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -15,9 +15,9 @@ import java.util.List;
 
 @Getter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Generated
 public class ReqCreateMission {
 
     @NotEmpty

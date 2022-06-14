@@ -211,7 +211,7 @@ class MemberRepositoryTest {
       .isWithdrawal(false)
       .participationMissions(new ArrayList<>())
       .topicOfInterests(createMemberOfInterestOfTopic())
-      .grade(createBeginnerGrade())
+      .grade(createROLE_BEGINNERGrade())
       .build();
   }
 
@@ -224,11 +224,11 @@ class MemberRepositoryTest {
       .isWithdrawal(false)
       .participationMissions(new ArrayList<>())
       .topicOfInterests(new ArrayList<>())
-      .grade(createBeginnerGrade())
+      .grade(createROLE_BEGINNERGrade())
       .build();
   }
 
-  private Grade createBeginnerGrade() {
+  private Grade createROLE_BEGINNERGrade() {
     return Grade.builder()
       .gradeStaus(GradeStaus.BEGINNER)
       .build();
